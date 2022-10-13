@@ -1,4 +1,4 @@
-list(APPEND files "Concepts.h")
+list(APPEND files "Concepts.cpp" "Concepts.h")
 
 add_library(fisk_tools ${files})
 
