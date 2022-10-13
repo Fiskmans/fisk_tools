@@ -1,2 +1,4 @@
 ### 1 
-Implement StreamWriter's write raw implementation
+Implement StreamWriter's WriteRaw implementation
+### 2
+Implement StreamReader's ReadRaw implementation
