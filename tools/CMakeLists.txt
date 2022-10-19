@@ -2,6 +2,11 @@ list(APPEND files "Concepts.h")
 list(APPEND files "DataProcessor.h")
 list(APPEND files "StreamWriter.cpp" "StreamWriter.h")
 list(APPEND files "StreamReader.cpp" "StreamReader.h")
+list(APPEND files "Event.h")
+list(APPEND files "Logger.cpp" "Logger.h")
+list(APPEND files "Time.cpp" "Time.h")
+list(APPEND files "Macros.h")
+list(APPEND files "LockedResource.h")
 
 
 add_library(fisk_tools ${files})

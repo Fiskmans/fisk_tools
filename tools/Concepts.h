@@ -7,11 +7,11 @@
 
 namespace fisk::tools
 {
-	template<class Type>
-	concept Serializable = requires (Type aItem)
-	{
-		{ aItem.Process(std::declval<DataProcessor>()) };
-	};
-}
+    template <class Type>
+    concept Serializable = requires(Type aItem)
+    {
+        {aItem.Process(std::declval<DataProcessor>())};
+    };
+} // namespace fisk::tools
 
 #endif
