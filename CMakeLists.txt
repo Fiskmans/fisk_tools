@@ -7,7 +7,5 @@ set(FISK_TOOLS_INCLUDED true)
 
 project(FISK_TOOLS)
 
-list(APPEND FISK_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
-
 set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(tools)

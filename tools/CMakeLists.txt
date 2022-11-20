@@ -12,4 +12,4 @@ list(APPEND files "LockedResource.h")
 add_library(fisk_tools ${files})
 
 set_property(TARGET fisk_tools PROPERTY CXX_STANDARD 20)
-target_include_directories(fisk_tools PUBLIC ${FISK_INCLUDE_DIRS})
+target_include_directories(fisk_tools PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
