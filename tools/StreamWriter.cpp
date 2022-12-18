@@ -55,6 +55,12 @@ namespace fisk::tools
 		return true;
 	}
 
+	bool StreamWriter::Process(std::string& aValue)
+	{
+		myStream.WriteData(reinterpret_cast<const uint8_t*>(aValue.c_str()), aValue.size() + 1);
+		return true;
+	}
+
 	void StreamWriter::WriteRaw(uint8_t* aData, uint32_t aSize)
 	{
 		myStream.WriteData(aData, aSize);

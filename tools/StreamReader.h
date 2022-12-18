@@ -24,6 +24,8 @@ namespace fisk::tools
 		bool Process(uint64_t& aValue) override;
 		bool Process(int64_t& aValue) override;
 
+		bool Process(std::string& aValue) override;
+
 	private:
 		bool ReadRaw(uint8_t* aData, uint32_t aSize);
 

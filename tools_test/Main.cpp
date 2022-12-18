@@ -142,6 +142,8 @@ TEST_CASE("StreamWriter", "[Data]")
 	uint64_t u64 = 7;
 	int64_t i64	 = -8;
 
+	std::string s = "Hello";
+
 	REQUIRE(sw.Process(u8));
 	REQUIRE(sw.Process(i8));
 	REQUIRE(sw.Process(u16));
@@ -150,6 +152,7 @@ TEST_CASE("StreamWriter", "[Data]")
 	REQUIRE(sw.Process(i32));
 	REQUIRE(sw.Process(u64));
 	REQUIRE(sw.Process(i64));
+	REQUIRE(sw.Process(s));
 
 	std::shared_ptr<fisk::tools::StreamSegment> head = ws.Get();
 
@@ -162,13 +165,14 @@ TEST_CASE("StreamWriter", "[Data]")
 		0b00000101, 0b00000000, 0b00000000, 0b00000000,
 		0b11111010, 0b11111111, 0b11111111, 0b11111111,
 		0b00000111, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
-		0b11111000, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111
+		0b11111000, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111,
+		'H','e','l','l','o','\0'
 		// clang-format on
 	};
 
 	REQUIRE(!head->myNext);
-	REQUIRE(head->mySize == 30);
-	REQUIRE(memcmp(head->myData, expected, 30) == 0);
+	REQUIRE(head->mySize == sizeof(expected));
+	REQUIRE(memcmp(head->myData, expected, sizeof(expected)) == 0);
 }
 
 TEST_CASE("ReadStream", "[Data]")
@@ -253,7 +257,8 @@ TEST_CASE("StreamReader", "[Data]")
 			0b00000101, 0b00000000, 0b00000000, 0b00000000,
 			0b11111010, 0b11111111, 0b11111111, 0b11111111,
 			0b00000111, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
-			0b11111000, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111
+			0b11111000, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111,
+			'H','e','l','l','o','\0'
 			// clang-format on
 		};
 
@@ -271,6 +276,7 @@ TEST_CASE("StreamReader", "[Data]")
 	int32_t i32	 = 0;
 	uint64_t u64 = 0;
 	int64_t i64	 = 0;
+	std::string s;
 
 	REQUIRE(sr.Process(u8));
 	REQUIRE(sr.Process(i8));
@@ -280,6 +286,7 @@ TEST_CASE("StreamReader", "[Data]")
 	REQUIRE(sr.Process(i32));
 	REQUIRE(sr.Process(u64));
 	REQUIRE(sr.Process(i64));
+	REQUIRE(sr.Process(s));
 
 	REQUIRE(u8 == 1);
 	REQUIRE(i8 == -2);
@@ -289,6 +296,7 @@ TEST_CASE("StreamReader", "[Data]")
 	REQUIRE(i32 == -6);
 	REQUIRE(u64 == 7);
 	REQUIRE(i64 == -8);
+	REQUIRE(s == "Hello");
 
 	REQUIRE(!sr.Process(u8));
 	REQUIRE(!sr.Process(i8));
@@ -298,4 +306,5 @@ TEST_CASE("StreamReader", "[Data]")
 	REQUIRE(!sr.Process(i32));
 	REQUIRE(!sr.Process(u64));
 	REQUIRE(!sr.Process(i64));
+	REQUIRE(!sr.Process(s));
 }

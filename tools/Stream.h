@@ -37,11 +37,14 @@ namespace fisk::tools
 		void AppendData(std::shared_ptr<StreamSegment> aData);
 
 		bool Read(uint8_t* aData, size_t aSize);
+		size_t Peek(uint8_t* aData, size_t aSize);
 
 		void CommitRead();
 		void RestoreRead();
 
 	private:
+		size_t PrivPeek(uint8_t* aData, size_t aSize, StreamOffset& aOutEnd);
+
 		StreamOffset myReadHead;
 		StreamOffset myCheckpoint;
 

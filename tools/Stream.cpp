@@ -56,33 +56,18 @@ namespace fisk::tools
 
 	bool ReadStream::Read(uint8_t* aData, size_t aSize)
 	{
-		if (!myReadHead)
-			return false;
+		StreamOffset off;
+		size_t amount = PrivPeek(aData, aSize, off);
+		myReadHead	  = off;
 
-		uint8_t* at = aData;
-		size_t left = aSize;
+		return amount == aSize;
+	}
 
-		while (left > 0)
-		{
-			size_t amount = myReadHead.mySegment->Read(at, myReadHead.myOffset, left);
+	size_t ReadStream::Peek(uint8_t* aData, size_t aSize)
+	{
+		StreamOffset off;
 
-			left -= amount;
-			at += amount;
-			myReadHead.myOffset += amount;
-
-			if (myReadHead.myOffset == myReadHead.mySegment->mySize)
-			{
-				std::shared_ptr<StreamSegment> old = myReadHead.mySegment;
-
-				myReadHead.myOffset	 = 0;
-				myReadHead.mySegment = myReadHead.mySegment->myNext;
-
-				if (left > 0 && !myReadHead.mySegment)
-					return false;
-			}
-		}
-
-		return true;
+		return PrivPeek(aData, aSize, off);
 	}
 
 	void ReadStream::CommitRead()
@@ -100,6 +85,39 @@ namespace fisk::tools
 	void ReadStream::RestoreRead()
 	{
 		myReadHead = myCheckpoint;
+	}
+
+	size_t ReadStream::PrivPeek(uint8_t* aData, size_t aSize, StreamOffset& aOutEnd)
+	{
+		if (!myReadHead)
+			return 0;
+
+		aOutEnd = myReadHead;
+
+		uint8_t* at = aData;
+		size_t left = aSize;
+
+		while (left > 0)
+		{
+			size_t amount = aOutEnd.mySegment->Read(at, aOutEnd.myOffset, left);
+
+			left -= amount;
+			at += amount;
+			aOutEnd.myOffset += amount;
+
+			if (aOutEnd.myOffset == aOutEnd.mySegment->mySize)
+			{
+				std::shared_ptr<StreamSegment> old = aOutEnd.mySegment;
+
+				aOutEnd.myOffset	 = 0;
+				aOutEnd.mySegment = aOutEnd.mySegment->myNext;
+
+				if (!aOutEnd.mySegment)
+					break;
+			}
+		}
+
+		return aSize - left;
 	}
 
 	void WriteStream::WriteData(const uint8_t* aData, size_t aSize)
