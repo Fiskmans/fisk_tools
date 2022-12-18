@@ -12,6 +12,7 @@ namespace fisk::tools
     {
         {aItem.Process(std::declval<DataProcessor>())};
     };
+
 } // namespace fisk::tools
 
 #endif

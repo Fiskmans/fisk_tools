@@ -8,17 +8,17 @@ namespace fisk::tools
 
     class DataProcessor
     {
-        virtual void Process(uint8_t& aValue) = 0;
-        virtual void Process(int8_t& aValue)  = 0;
+        virtual bool Process(uint8_t& aValue) = 0;
+        virtual bool Process(int8_t& aValue)  = 0;
 
-        virtual void Process(uint16_t& aValue) = 0;
-        virtual void Process(int16_t& aValue)  = 0;
+        virtual bool Process(uint16_t& aValue) = 0;
+        virtual bool Process(int16_t& aValue)  = 0;
 
-        virtual void Process(uint32_t& aValue) = 0;
-        virtual void Process(int32_t& aValue)  = 0;
+        virtual bool Process(uint32_t& aValue) = 0;
+        virtual bool Process(int32_t& aValue)  = 0;
 
-        virtual void Process(uint64_t& aValue) = 0;
-        virtual void Process(int64_t& aValue)  = 0;
+        virtual bool Process(uint64_t& aValue) = 0;
+        virtual bool Process(int64_t& aValue)  = 0;
     };
 
 } // namespace fisk::tools

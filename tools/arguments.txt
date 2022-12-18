@@ -1,8 +1,0 @@
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\bin\clang-format.exe
--output-replacements-xml
--style=file
--fallback-style=LLVM
--assume-filename=StreamWriter.h
--offset=0
--length=606
--cursor=606

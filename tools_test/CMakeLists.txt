@@ -1,0 +1,12 @@
+list(APPEND files "Main.cpp")
+
+add_executable(fisk_tools_test ${files})
+
+target_include_directories(fisk_tools_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
+target_link_libraries(fisk_tools_test PUBLIC fisk_tools)
+target_link_libraries(fisk_tools_test PRIVATE Catch2::Catch2WithMain)
+
+
+include(Catch)
+catch_discover_tests(fisk_tools_test)
