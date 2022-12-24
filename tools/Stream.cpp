@@ -175,4 +175,15 @@ namespace fisk::tools
 		return out;
 	}
 
+	bool WriteStream::HasData()
+	{
+		if (!myHead)
+			return false;
+
+		if (myHead->mySize == 0)
+			return false;
+
+		return true;
+	}
+
 } // namespace fisk::tools

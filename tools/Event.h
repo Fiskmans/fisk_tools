@@ -8,59 +8,73 @@
 
 namespace fisk::tools
 {
-    using EventID             = size_t;
-    const EventID NullEventId = 0;
+	class EventRegistration;
 
-    inline EventID NextID()
-    {
-        static EventID CurrentID = NullEventId;
-        return ++CurrentID;
-    }
+	template <typename... Args>
+	class Event
+	{
+	public:
+		std::unique_ptr<EventRegistration> Register(std::function<void(Args...)> aCallback);
 
-    template <typename... Args> class Event
-    {
-      public:
-        EventID Register(std::function<void(Args...)> aCallback);
-        void UnRegister(EventID aEventId);
+		void Fire(Args... aArgs) const;
 
-        void Fire(Args... aArgs) const;
+	private:
+		using EventID				  = size_t;
+		static constexpr EventID NullEventId = 0;
 
-      private:
-        std::unordered_map<EventID, std::function<void(Args...)>> myCallbacks;
-    };
+		inline EventID NextID()
+		{
+			return ++myCurrentID;
+		}
 
-    template <typename... Args> inline EventID Event<Args...>::Register(std::function<void(Args...)> aCallback)
-    {
-        EventID id = NextID();
-        myCallbacks.emplace(id, aCallback);
-        return id;
-    }
+		void UnRegister(EventID aEventId);
 
-    template <typename... Args> inline void Event<Args...>::UnRegister(EventID aEventId)
-    {
-        if (aEventId == NullEventId)
-        {
-            LOG_ERROR("Unregistering null eventid");
-            return;
-        }
+		EventID myCurrentID = NullEventId;
+		std::unordered_map<EventID, std::function<void(Args...)>> myCallbacks;
+	};
 
-        typename decltype(myCallbacks)::iterator it = myCallbacks.find(aEventId);
-        if (it == myCallbacks.end())
-        {
-            LOG_ERROR("Callback not registered to this event");
-            return;
-        }
+	class EventRegistration
+	{
+	public:
+		~EventRegistration();
 
-        myCallbacks.erase(it);
-    }
+	private:
+		template <typename...>
+		friend class Event;
+		std::function<void()> myDeregistraion;
+	};
 
-    template <typename... Args> inline void Event<Args...>::Fire(Args... aArgs) const
-    {
-        for (const std::pair<EventID, std::function<void(Args...)>>& it : myCallbacks)
-        {
-            it.second(aArgs...);
-        }
-    }
+	template <typename... Args>
+	inline std::unique_ptr<EventRegistration> Event<Args...>::Register(std::function<void(Args...)> aCallback)
+	{
+		EventID id = NextID();
+		myCallbacks.emplace(id, aCallback);
+
+		std::unique_ptr<EventRegistration> out = std::make_unique<EventRegistration>();
+		out->myDeregistraion				   = [id, this]() { UnRegister(id); };
+
+		return std::move(out);
+	}
+
+	template <typename... Args>
+	inline void Event<Args...>::UnRegister(EventID aEventId)
+	{
+		assert(aEventId != NullEventId);
+
+		typename decltype(myCallbacks)::iterator it = myCallbacks.find(aEventId);
+		assert(it != myCallbacks.end());
+
+		myCallbacks.erase(it);
+	}
+
+	template <typename... Args>
+	inline void Event<Args...>::Fire(Args... aArgs) const
+	{
+		for (const std::pair<EventID, std::function<void(Args...)>>& it : myCallbacks)
+		{
+			it.second(aArgs...);
+		}
+	}
 
 } // namespace fisk::tools
 

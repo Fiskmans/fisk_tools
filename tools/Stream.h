@@ -57,6 +57,7 @@ namespace fisk::tools
 		void WriteData(const uint8_t* aData, size_t aSize);
 
 		std::shared_ptr<StreamSegment> Get();
+		bool HasData();
 
 	private:
 
