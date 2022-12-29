@@ -14,7 +14,7 @@ namespace fisk::tools
 	class Event
 	{
 	public:
-		std::unique_ptr<EventRegistration> Register(std::function<void(Args...)> aCallback);
+		[[nodiscard]] std::unique_ptr<EventRegistration> Register(std::function<void(Args...)> aCallback);
 
 		void Fire(Args... aArgs) const;
 
@@ -43,6 +43,8 @@ namespace fisk::tools
 		friend class Event;
 		std::function<void()> myDeregistraion;
 	};
+
+	using EventReg = std::unique_ptr<EventRegistration>;
 
 	template <typename... Args>
 	inline std::unique_ptr<EventRegistration> Event<Args...>::Register(std::function<void(Args...)> aCallback)

@@ -12,7 +12,7 @@ TEST_CASE("Listen socket", "[Network]")
 
 	std::shared_ptr<fisk::tools::TCPSocket> connectedSocket;
 
-	std::shared_ptr<fisk::tools::EventRegistration> reg = listenSocket.OnNewConnection.Register(
+	std::unique_ptr<fisk::tools::EventRegistration> reg = listenSocket.OnNewConnection.Register(
 		[&connectedSocket](std::shared_ptr<fisk::tools::TCPSocket> aSocket) { connectedSocket = aSocket; });
 
 	using namespace std::chrono_literals;
@@ -53,7 +53,7 @@ TEST_CASE("Listen socket", "[Network]")
 		bool hasRead = false;
 		uint8_t read[sizeof(data)];
 
-		std::shared_ptr<fisk::tools::EventRegistration> dataReg =
+		std::unique_ptr<fisk::tools::EventRegistration> dataReg =
 			connectedSocket->OnDataAvailable.Register([&hasRead, &connectedSocket, &read]() {
 				fisk::tools::ReadStream& stream = connectedSocket->GetReadStream();
 
