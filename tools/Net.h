@@ -3,6 +3,7 @@
 
 #include "tools/Singleton.h"
 
+#include <limits>
 
 namespace fisk::tools
 {
@@ -71,7 +72,6 @@ namespace fisk::tools
 
 		return NetHandle(this);
 	}
-
 }
 
 #endif

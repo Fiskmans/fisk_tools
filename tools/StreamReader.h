@@ -27,6 +27,10 @@ namespace fisk::tools
 		bool Process(std::string& aValue) override;
 
 	private:
+
+		bool ReadRawNumeric(uint8_t* aData, uint32_t aSize);
+
+		bool ReadRawReversed(uint8_t* aData, uint32_t aSize);
 		bool ReadRaw(uint8_t* aData, uint32_t aSize);
 
 		ReadStream& myReadStream;

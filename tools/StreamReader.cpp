@@ -1,7 +1,26 @@
 #include "tools/StreamReader.h"
 
+#include <bit>
+
 namespace fisk::tools
 {
+	bool StreamReader::ReadRawNumeric(uint8_t* aData, uint32_t aSize)
+	{
+		if constexpr (std::endian::native == std::endian::big) 
+			return ReadRaw(aData, aSize);
+		else if constexpr (std::endian::native == std::endian::little) 
+			return ReadRawReversed(aData, aSize);
+	}
+
+	bool StreamReader::ReadRawReversed(uint8_t* aData, uint32_t aSize)
+	{
+		if (!myReadStream.Read(aData, aSize))
+			return false;
+
+		std::reverse(aData, aData + aSize);
+
+		return true;
+	}
 
 	bool StreamReader::ReadRaw(uint8_t* aData, uint32_t aSize)
 	{
@@ -15,42 +34,42 @@ namespace fisk::tools
 
 	bool StreamReader::Process(uint8_t& aValue)
 	{
-		return ReadRaw(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
+		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
 	}
 
 	bool StreamReader::Process(int8_t& aValue)
 	{
-		return ReadRaw(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
+		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
 	}
 
 	bool StreamReader::Process(uint16_t& aValue)
 	{
-		return ReadRaw(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
+		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
 	}
 
 	bool StreamReader::Process(int16_t& aValue)
 	{
-		return ReadRaw(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
+		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
 	}
 
 	bool StreamReader::Process(uint32_t& aValue)
 	{
-		return ReadRaw(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
+		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
 	}
 
 	bool StreamReader::Process(int32_t& aValue)
 	{
-		return ReadRaw(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
+		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
 	}
 
 	bool StreamReader::Process(uint64_t& aValue)
 	{
-		return ReadRaw(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
+		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
 	}
 
 	bool StreamReader::Process(int64_t& aValue)
 	{
-		return ReadRaw(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
+		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
 	}
 
 	bool StreamReader::Process(std::string& aValue)

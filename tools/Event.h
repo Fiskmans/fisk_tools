@@ -70,10 +70,15 @@ namespace fisk::tools
 	template <typename... Args>
 	inline void Event<Args...>::Fire(Args... aArgs) const
 	{
+		std::vector<std::function<void(Args...)>> stackCopy;
+
+		stackCopy.reserve(myCallbacks.size());
+
 		for (const std::pair<EventID, std::function<void(Args...)>>& it : myCallbacks)
-		{
-			it.second(aArgs...);
-		}
+			stackCopy.push_back(it.second);
+
+		for (const std::function<void(Args...)>& callback : stackCopy)
+			callback(std::forward<Args>(aArgs)...);
 	}
 
 } // namespace fisk::tools

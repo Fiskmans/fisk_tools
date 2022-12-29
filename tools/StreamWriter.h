@@ -29,7 +29,10 @@ namespace fisk::tools
 		bool Process(std::string& aValue) override;
 
 	private:
-		void WriteRaw(uint8_t* aData, uint32_t aSize);
+		void WriteRawNumeric(const uint8_t* aData, uint32_t aSize);
+
+		void WriteRawReversed(const uint8_t* aData, uint32_t aSize);
+		void WriteRaw(const uint8_t* aData, uint32_t aSize);
 
 		WriteStream& myStream;
 	};

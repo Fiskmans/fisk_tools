@@ -2,9 +2,9 @@
 
 #include <catch2/catch_all.hpp>
 
+#include "tools/EggClock.h"
 #include "tools/TCPListenSocket.h"
 #include "tools/TCPSocket.h"
-#include "tools/EggClock.h"
 
 TEST_CASE("Listen socket", "[Network]")
 {
@@ -17,8 +17,9 @@ TEST_CASE("Listen socket", "[Network]")
 
 	using namespace std::chrono_literals;
 
-	fisk::tools::TCPSocket clientSocket = fisk::tools::ConnectToTCPByName("localhost", std::to_string(listenSocket.GetPort()).c_str(), 500ms);
-	
+	fisk::tools::TCPSocket clientSocket =
+		fisk::tools::ConnectToTCPByName("localhost", std::to_string(listenSocket.GetPort()).c_str(), 500ms);
+
 	{
 		fisk::tools::EggClock timer(500ms);
 
@@ -39,19 +40,34 @@ TEST_CASE("Listen socket", "[Network]")
 		REQUIRE(connectedSocket);
 	}
 
-	const uint8_t data[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+	const uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8};
 	{
 		clientSocket.GetWriteStream().WriteData(data, sizeof(data));
 	}
 
 	{
 		fisk::tools::EggClock timer(500ms);
-		bool client = true;
+		bool client	   = true;
 		bool connected = true;
 
+		bool hasRead = false;
 		uint8_t read[sizeof(data)];
 
-		while (true)
+		std::shared_ptr<fisk::tools::EventRegistration> dataReg =
+			connectedSocket->OnDataAvailable.Register([&hasRead, &connectedSocket, &read]() {
+				fisk::tools::ReadStream& stream = connectedSocket->GetReadStream();
+
+				if (!stream.Read(read, sizeof(read)))
+				{
+					stream.RestoreRead();
+					return;
+				}
+
+				stream.CommitRead();
+				hasRead = true;
+			});
+
+		while (!hasRead)
 		{
 			client &= clientSocket.Update();
 			connected &= connectedSocket->Update();
@@ -63,24 +79,12 @@ TEST_CASE("Listen socket", "[Network]")
 				break;
 			if (!connected)
 				break;
-
-			fisk::tools::ReadStream& stream = connectedSocket->GetReadStream();
-
-			if (!stream.Read(read, sizeof(read)))
-			{
-				stream.RestoreRead();
-				continue;
-			}
-
-			stream.CommitRead();
-			REQUIRE(memcmp(data, read, sizeof(data)) == 0);
-			break;
 		}
+
+		REQUIRE(!timer.IsDone());
+		REQUIRE(memcmp(data, read, sizeof(data)) == 0);
 
 		REQUIRE(client);
 		REQUIRE(connected);
-		REQUIRE(!timer.IsDone());
 	}
-
-
 }
