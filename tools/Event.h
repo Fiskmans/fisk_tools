@@ -33,6 +33,28 @@ namespace fisk::tools
 		std::unordered_map<EventID, std::function<void(Args...)>> myCallbacks;
 	};
 
+	
+	template <typename... Args>
+	class SingleFireEvent
+	{
+	public:
+		[[nodiscard]] void Register(std::function<void(Args...)> aCallback)
+		{
+			myCallback = aCallback;
+		}
+
+		void Fire(Args... aArgs)
+		{
+			if (myCallback)
+				myCallback(std::forward<Args>(aArgs)...);
+
+			myCallback = nullptr;
+		}
+
+	private:
+		std::function<void(Args...)> myCallback;
+	};
+
 	class EventRegistration
 	{
 	public:
