@@ -9,6 +9,7 @@ namespace fisk::tools
 
 	class DataProcessor
 	{
+	public:
 		virtual bool Process(uint8_t& aValue) = 0;
 		virtual bool Process(int8_t& aValue)  = 0;
 

@@ -7,9 +7,9 @@
 
 #include "tools/TCPSocket.h"
 
+#define NOMINMAX
 #include <WinSock2.h>
 #include <Ws2tcpip.h>
-#define NOMINMAX
 #include <Windows.h>
 
 namespace fisk::tools

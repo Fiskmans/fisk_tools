@@ -7,8 +7,8 @@
 
 #include "tools/Net.h"
 
-#include <WinSock2.h>
 #define NOMINMAX
+#include <WinSock2.h>
 #include <Windows.h>
 
 #endif
