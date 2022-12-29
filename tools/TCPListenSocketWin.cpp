@@ -149,11 +149,6 @@ namespace fisk::tools
 		}
 	}
 
-	Port TCPListenSocket::GetPort()
-	{
-		return myPort;
-	}
-
 } // namespace fisk::tools
 
 #endif

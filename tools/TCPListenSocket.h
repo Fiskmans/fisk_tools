@@ -19,7 +19,7 @@ namespace fisk::tools
 		~TCPListenSocket() = default;
 
 		bool Update();
-		Port GetPort();
+		Port GetPort() const;
 
 		Event<std::shared_ptr<TCPSocket>> OnNewConnection;
 
@@ -27,6 +27,11 @@ namespace fisk::tools
 		Port myPort = AnyPort;
 		Socket mySocket;
 	};
+
+	inline Port TCPListenSocket::GetPort() const
+	{
+		return myPort;
+	}
 }
 
 #endif
