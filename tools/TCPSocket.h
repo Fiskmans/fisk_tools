@@ -15,6 +15,7 @@ namespace fisk::tools
 		TCPSocket(std::shared_ptr<Socket> aSocket);
 
 		bool Update();
+		void Close();
 
 		WriteStream& GetWriteStream();
 		ReadStream& GetReadStream();

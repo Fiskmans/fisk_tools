@@ -38,6 +38,11 @@ namespace fisk::tools
 		return true;
 	}
 
+	void TCPSocket::Close()
+	{
+		mySocket.reset();
+	}
+
 	bool TCPSocket::HandleSend()
 	{
 		while (myWriteStream.HasData() || myWriteQueue)
