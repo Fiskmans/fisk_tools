@@ -38,7 +38,7 @@ namespace fisk::tools
 	class SingleFireEvent
 	{
 	public:
-		[[nodiscard]] void Register(std::function<void(Args...)> aCallback)
+		void Register(std::function<void(Args...)> aCallback)
 		{
 			myCallback = aCallback;
 		}
