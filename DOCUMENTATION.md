@@ -120,7 +120,7 @@ aData: A linked list of data segments
 #### `bool Read(uint8_t* aData, size_t aSize)`
 Attempt to read some data from the stream
 
-aData: the target buffer
+aData: the target buffer  
 aSize: the amount of data to read
 
 Return `bool`: `true` if all the data could be read `false` otherwise
