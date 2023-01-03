@@ -99,22 +99,22 @@ namespace fisk::tools
 
 		while (left > 0)
 		{
+			if (aOutEnd.myOffset == aOutEnd.mySegment->mySize)
+			{
+				if (!aOutEnd.mySegment->myNext)
+					break;
+
+				std::shared_ptr<StreamSegment> old = aOutEnd.mySegment;
+
+				aOutEnd.myOffset  = 0;
+				aOutEnd.mySegment = aOutEnd.mySegment->myNext;
+			}
+
 			size_t amount = aOutEnd.mySegment->Read(at, aOutEnd.myOffset, left);
 
 			left -= amount;
 			at += amount;
 			aOutEnd.myOffset += amount;
-
-			if (aOutEnd.myOffset == aOutEnd.mySegment->mySize)
-			{
-				std::shared_ptr<StreamSegment> old = aOutEnd.mySegment;
-
-				aOutEnd.myOffset	 = 0;
-				aOutEnd.mySegment = aOutEnd.mySegment->myNext;
-
-				if (!aOutEnd.mySegment)
-					break;
-			}
 		}
 
 		return aSize - left;

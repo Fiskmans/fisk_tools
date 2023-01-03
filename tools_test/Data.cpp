@@ -197,6 +197,18 @@ TEST_CASE("ReadStream", "[Data]")
 
 	rs.RestoreRead();
 	REQUIRE(!rs.Read(read, 8));
+	rs.CommitRead();
+
+	std::shared_ptr<fisk::tools::StreamSegment> third = std::make_shared<fisk::tools::StreamSegment>();
+	third->mySize									  = 8;
+	memcpy(third->myData, data, 8);
+
+	rs.AppendData(third);
+
+	REQUIRE(rs.Read(read, 8));
+	REQUIRE(memcmp(read, data, 8) == 0);
+
+	rs.CommitRead();
 }
 
 TEST_CASE("StreamReader", "[Data]")
