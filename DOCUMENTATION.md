@@ -6,7 +6,7 @@
  #include "tools/Event.h"
  fisk::tools::Event<...>
  ```
- Event utility, all callbacks needs to be unregistered before destruction of the event
+ Stores callbacks and executes them when fired, all callbacks needs to be unregistered before destruction of the event
  ___
  `EventReg Register(std::function<void(Args...)> aCallback)`  
  Registers a callback to be executed when the event fires  
@@ -38,7 +38,7 @@
  #include "tools/Iterators.h"
  fisk::tools::IteratePointers<class>
  ```
- Utility to pass pair of pointers to places expecting single class with `begin()` and `end()` e.g. range-for
+ Helps with iterating over a pair of pointers in e.g. range-for
  ___
  **constructor**  
  `IteratePointers(T* aBegin, T* aEnd)`  
@@ -60,7 +60,7 @@
  #include "tools/Socket.h"
  fisk::tools::Socket
  ```
- A platform agnostic interface that holds and automatically closes a socket when destructed
+ Holds and automatically closes a platform agnostic socket when destructed
 </details>
 <details id="tcp-socket"> <summary>TCP Socket</summary>
  
@@ -68,7 +68,7 @@
  #include "tools/TCPSocket.h"
  fisk::tools::TCPSocket
  ```
- A platform agnostic interface that allows interaction with a tcp socket
+ Allows interaction with a platform agnostic TCP socket
 
  ___
  **constructor**  
@@ -106,7 +106,7 @@
  #include "tools/TCPListenSocket.h"
  fisk::tools::TCPListenSocket
  ```
- A platform agnostic TCP listen socket, Always listens on all available interfaces
+ Platform agnostic TCP listen socket, Always listens on all available interfaces
  ___
  **constructor**  
  `TCPListenSocket(Port aPort)`  
