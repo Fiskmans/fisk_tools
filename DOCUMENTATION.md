@@ -155,7 +155,7 @@
  #include "tools/Stream.h"
  fisk::tools::ReadStream
  ```
- Buffering a stream of data for reading
+ Buffers a stream of data for reading
  ___
  `void AppendData(std::shared_ptr<StreamSegment> aData)`  
  Append some data to the stream
