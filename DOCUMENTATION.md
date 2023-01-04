@@ -131,7 +131,8 @@
  #include "tools/DataProcessor.h"
  fisk::tools::DataProcessor
  ```
- An interface that implements utility to process objects
+ Interface for classes that implements utility to process objects  
+ Handles: `uint8_t`, `int8_t`, `uint16_t`, `int16_t`, `uint32_t`, `int32_t`, `uint64_t`, `int64_t`, `std::string`, and anything that fulfills the [serializable](#serializable) concept
  ___
  `bool Process(T& aValue)`  
  Processes a value  
@@ -139,13 +140,22 @@
  Returns `true` if it was successful `false` otherwise
  ___
 </details>
+<details id="serializable"> <summary>Serializable</summary>
+ 
+ ```
+ #include "tools/concepts.h"
+ fisk::tools::Serializable
+ ```
+ **concept**  
+ `true` if the type can be processed by a [data processor](#data-processor)
+</details>
 <details id="read-stream"> <summary>Read Stream</summary>
 
  ```
  #include "tools/Stream.h"
  fisk::tools::ReadStream
  ```
- A helper class for buffering and reading data in a stream format
+ Buffering a stream of data for reading
  ___
  `void AppendData(std::shared_ptr<StreamSegment> aData)`  
  Append some data to the stream
@@ -175,7 +185,7 @@
  #include "tools/Stream.h"
  fisk::tools::ReadStream
  ```
- A tool to write data into stream segments
+ Writes data into stream segments
  ___
  `void WriteData(const uint8_t* aData, size_t aSize)`  
  Writes data to the stream  
@@ -196,7 +206,7 @@
  #include "tools/StreamReader.h"
  fisk::tools::StreamReader
  ```
- A tool to help read objects from a [read stream](#read-stream)  
+ Helps you read objects from a [read stream](#read-stream)  
  Implements the [Data Processor](#data-processor) interface
  ___
  **constructor**  
@@ -210,7 +220,7 @@
  #include "tools/StreamWriter.h"
  fisk::tools::StreamWriter
  ```
- A tool to help write objects to a WriteStream  
+ Helps you write objects to a WriteStream  
  Implements the [Data Processor](#data-processor) interface
  ___
  **constructor**  
