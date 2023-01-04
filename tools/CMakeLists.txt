@@ -17,6 +17,7 @@ list(APPEND files "Net.h" "NetWin.cpp")
 list(APPEND files "Socket.h" "SocketWin.cpp")
 list(APPEND files "TCPListenSocket.h" "TCPListenSocketWin.cpp")
 list(APPEND files "TCPSocket.h" "TCPSocketWin.cpp")
+list(APPEND files "Json.h" "Json.cpp")
 
 add_library(fisk_tools ${files})
 

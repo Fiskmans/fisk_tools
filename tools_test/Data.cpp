@@ -2,10 +2,12 @@
 
 #include <catch2/catch_all.hpp>
 
+#include "tools/Json.h"
 #include "tools/StreamReader.h"
 #include "tools/StreamWriter.h"
 
 #include <algorithm>
+#include <string_view>
 
 TEST_CASE("WriteStream", "[Data]")
 {
@@ -278,4 +280,85 @@ TEST_CASE("StreamReader", "[Data]")
 	REQUIRE(!sr.Process(u64));
 	REQUIRE(!sr.Process(i64));
 	REQUIRE(!sr.Process(s));
+}
+
+TEST_CASE("JSON", "[Data]")
+{
+
+	REQUIRE(fisk::tools::JSONObject().Parse("{}"));
+	{
+		fisk::tools::JSONObject obj;
+		REQUIRE(!obj);
+
+		REQUIRE(obj.Parse("null"));
+		REQUIRE(obj.IsNull());
+		REQUIRE(!obj);
+
+		REQUIRE(obj.Parse("{}"));
+		REQUIRE(obj);
+	}
+	REQUIRE(!fisk::tools::JSONObject().Parse(""));
+	REQUIRE(!fisk::tools::JSONObject().Parse("{"));
+	REQUIRE(!fisk::tools::JSONObject().Parse("["));
+	REQUIRE(!fisk::tools::JSONObject().Parse("{]"));
+	REQUIRE(!fisk::tools::JSONObject().Parse("[\"x\":1 }"));
+	REQUIRE(!fisk::tools::JSONObject().Parse("[1}"));
+	REQUIRE(!fisk::tools::JSONObject().Parse("{\"x"));
+	REQUIRE(!fisk::tools::JSONObject().Parse("{\"x\""));
+	REQUIRE(!fisk::tools::JSONObject().Parse("{\"x\":"));
+	REQUIRE(!fisk::tools::JSONObject().Parse("{\"x\":1"));
+	REQUIRE(fisk::tools::JSONObject().Parse("{ }"));
+	REQUIRE(fisk::tools::JSONObject().Parse("{\n}"));
+	REQUIRE(fisk::tools::JSONObject().Parse("{\t}"));
+	REQUIRE(fisk::tools::JSONObject().Parse("{\r}"));
+	REQUIRE(fisk::tools::JSONObject().Parse("{\b}"));
+	REQUIRE(fisk::tools::JSONObject().Parse("{\f}"));
+	REQUIRE(fisk::tools::JSONObject().Parse("[ ]"));
+	REQUIRE(fisk::tools::JSONObject().Parse("[\n]"));
+	REQUIRE(fisk::tools::JSONObject().Parse("[\t]"));
+	REQUIRE(fisk::tools::JSONObject().Parse("[\r]"));
+	REQUIRE(fisk::tools::JSONObject().Parse("[\b]"));
+	REQUIRE(fisk::tools::JSONObject().Parse("[\f]"));
+
+	{
+		fisk::tools::JSONObject root;
+		{
+			root.Parse("1");
+			REQUIRE(root);
+			int i = -1;
+			REQUIRE(root.GetIf(i));
+			REQUIRE(i == 1);
+			long l = -1;
+			REQUIRE(root.GetIf(l));
+			REQUIRE(l == 1);
+			long long ll = -1;
+			REQUIRE(root.GetIf(ll));
+			REQUIRE(ll == 1);
+			size_t sz = 2;
+			REQUIRE(root.GetIf(sz));
+			REQUIRE(sz == 1);
+
+			REQUIRE(root.Parse("{\"x\":2}"));
+			REQUIRE(root);
+			REQUIRE(root["x"]);
+			REQUIRE(root["x"].GetIf(i));
+			REQUIRE(i == 2);
+
+			using namespace std::string_view_literals;
+			REQUIRE(root.Parse("\"hello\""));
+			REQUIRE(root);
+			std::string s;
+			REQUIRE(root.GetIf(s));
+			REQUIRE(s == "hello");
+
+			REQUIRE(root.Parse("1.0"));
+			REQUIRE(root);
+			float f = 0.f;
+			REQUIRE(root.GetIf(f));
+			REQUIRE(f == Catch::Approx(1.0f));
+			double d = 0.f;
+			REQUIRE(root.GetIf(d));
+			REQUIRE(d == Catch::Approx(1.0));
+		}
+	}
 }
