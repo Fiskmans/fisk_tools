@@ -28,7 +28,7 @@ namespace fisk::tools
 		void operator==(const JSONObject& aOther) = delete;
 
 		JSONObject& operator[](const char* aKey) const;
-		JSONObject& operator[](size_t aIndex) const;
+		JSONObject& operator[](int aIndex) const;
 
 		bool Parse(const char* aString);
 

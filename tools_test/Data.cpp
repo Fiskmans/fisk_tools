@@ -323,18 +323,26 @@ TEST_CASE("JSON", "[Data]")
 	{
 		fisk::tools::JSONObject root;
 		{
+			std::string s;
+			int i = -1;
+			long l		 = -1;
+			long long ll = -1;
+			size_t sz	 = 2;
+			float f		 = 0.f;
+			double d	 = 0.f;
+			fisk::tools::JSONObject::ObjectType* obj;
+			fisk::tools::JSONObject::ArrayType* arr;
+
+
 			root.Parse("1");
 			REQUIRE(root);
-			int i = -1;
 			REQUIRE(root.GetIf(i));
+			REQUIRE(!root.GetIf(s));
 			REQUIRE(i == 1);
-			long l = -1;
 			REQUIRE(root.GetIf(l));
 			REQUIRE(l == 1);
-			long long ll = -1;
 			REQUIRE(root.GetIf(ll));
 			REQUIRE(ll == 1);
-			size_t sz = 2;
 			REQUIRE(root.GetIf(sz));
 			REQUIRE(sz == 1);
 
@@ -344,21 +352,39 @@ TEST_CASE("JSON", "[Data]")
 			REQUIRE(root["x"].GetIf(i));
 			REQUIRE(i == 2);
 
+			i = -1;
+
+			REQUIRE(root.GetIf(obj));
+			REQUIRE(obj);
+			REQUIRE(obj->size() == 1);
+			REQUIRE(obj->count("x") == 1);
+			REQUIRE(obj->at("x").get() == &root["x"]);
+
 			using namespace std::string_view_literals;
 			REQUIRE(root.Parse("\"hello\""));
 			REQUIRE(root);
-			std::string s;
 			REQUIRE(root.GetIf(s));
 			REQUIRE(s == "hello");
 
 			REQUIRE(root.Parse("1.0"));
 			REQUIRE(root);
-			float f = 0.f;
 			REQUIRE(root.GetIf(f));
 			REQUIRE(f == Catch::Approx(1.0f));
-			double d = 0.f;
 			REQUIRE(root.GetIf(d));
+			REQUIRE(!root.GetIf(s));
 			REQUIRE(d == Catch::Approx(1.0));
+
+			REQUIRE(root.Parse("[10]"));
+
+			REQUIRE(root[0]);
+			REQUIRE(root[0].GetIf(i));
+			REQUIRE(i == 10);
+
+			REQUIRE(root.GetIf(arr));
+			REQUIRE(arr);
+			REQUIRE(arr->size() == 1);
+			REQUIRE(arr->at(0));
+			REQUIRE(arr->at(0).get() == &root[0]);
 		}
 	}
 }

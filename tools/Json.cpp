@@ -148,7 +148,7 @@ namespace fisk::tools
 		return *(it->second);
 	}
 
-	JSONObject& JSONObject::operator[](size_t aIndex) const
+	JSONObject& JSONObject::operator[](int aIndex) const
 	{
 		if (IsNull())
 			return NullObject;
