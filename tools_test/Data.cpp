@@ -285,9 +285,9 @@ TEST_CASE("StreamReader", "[Data]")
 TEST_CASE("JSON", "[Data]")
 {
 
-	REQUIRE(fisk::tools::JSONObject().Parse("{}"));
+	REQUIRE(fisk::tools::Json().Parse("{}"));
 	{
-		fisk::tools::JSONObject obj;
+		fisk::tools::Json obj;
 		REQUIRE(!obj);
 
 		REQUIRE(obj.Parse("null"));
@@ -297,31 +297,31 @@ TEST_CASE("JSON", "[Data]")
 		REQUIRE(obj.Parse("{}"));
 		REQUIRE(obj);
 	}
-	REQUIRE(!fisk::tools::JSONObject().Parse(""));
-	REQUIRE(!fisk::tools::JSONObject().Parse("{"));
-	REQUIRE(!fisk::tools::JSONObject().Parse("["));
-	REQUIRE(!fisk::tools::JSONObject().Parse("{]"));
-	REQUIRE(!fisk::tools::JSONObject().Parse("[\"x\":1 }"));
-	REQUIRE(!fisk::tools::JSONObject().Parse("[1}"));
-	REQUIRE(!fisk::tools::JSONObject().Parse("{\"x"));
-	REQUIRE(!fisk::tools::JSONObject().Parse("{\"x\""));
-	REQUIRE(!fisk::tools::JSONObject().Parse("{\"x\":"));
-	REQUIRE(!fisk::tools::JSONObject().Parse("{\"x\":1"));
-	REQUIRE(fisk::tools::JSONObject().Parse("{ }"));
-	REQUIRE(fisk::tools::JSONObject().Parse("{\n}"));
-	REQUIRE(fisk::tools::JSONObject().Parse("{\t}"));
-	REQUIRE(fisk::tools::JSONObject().Parse("{\r}"));
-	REQUIRE(fisk::tools::JSONObject().Parse("{\b}"));
-	REQUIRE(fisk::tools::JSONObject().Parse("{\f}"));
-	REQUIRE(fisk::tools::JSONObject().Parse("[ ]"));
-	REQUIRE(fisk::tools::JSONObject().Parse("[\n]"));
-	REQUIRE(fisk::tools::JSONObject().Parse("[\t]"));
-	REQUIRE(fisk::tools::JSONObject().Parse("[\r]"));
-	REQUIRE(fisk::tools::JSONObject().Parse("[\b]"));
-	REQUIRE(fisk::tools::JSONObject().Parse("[\f]"));
+	REQUIRE(!fisk::tools::Json().Parse(""));
+	REQUIRE(!fisk::tools::Json().Parse("{"));
+	REQUIRE(!fisk::tools::Json().Parse("["));
+	REQUIRE(!fisk::tools::Json().Parse("{]"));
+	REQUIRE(!fisk::tools::Json().Parse("[\"x\":1 }"));
+	REQUIRE(!fisk::tools::Json().Parse("[1}"));
+	REQUIRE(!fisk::tools::Json().Parse("{\"x"));
+	REQUIRE(!fisk::tools::Json().Parse("{\"x\""));
+	REQUIRE(!fisk::tools::Json().Parse("{\"x\":"));
+	REQUIRE(!fisk::tools::Json().Parse("{\"x\":1"));
+	REQUIRE(fisk::tools::Json().Parse("{ }"));
+	REQUIRE(fisk::tools::Json().Parse("{\n}"));
+	REQUIRE(fisk::tools::Json().Parse("{\t}"));
+	REQUIRE(fisk::tools::Json().Parse("{\r}"));
+	REQUIRE(fisk::tools::Json().Parse("{\b}"));
+	REQUIRE(fisk::tools::Json().Parse("{\f}"));
+	REQUIRE(fisk::tools::Json().Parse("[ ]"));
+	REQUIRE(fisk::tools::Json().Parse("[\n]"));
+	REQUIRE(fisk::tools::Json().Parse("[\t]"));
+	REQUIRE(fisk::tools::Json().Parse("[\r]"));
+	REQUIRE(fisk::tools::Json().Parse("[\b]"));
+	REQUIRE(fisk::tools::Json().Parse("[\f]"));
 
 	{
-		fisk::tools::JSONObject root;
+		fisk::tools::Json root;
 		{
 			std::string s;
 			int i = -1;
@@ -330,8 +330,8 @@ TEST_CASE("JSON", "[Data]")
 			size_t sz	 = 2;
 			float f		 = 0.f;
 			double d	 = 0.f;
-			fisk::tools::JSONObject::ObjectType* obj;
-			fisk::tools::JSONObject::ArrayType* arr;
+			fisk::tools::Json::ObjectType* obj;
+			fisk::tools::Json::ArrayType* arr;
 
 
 			root.Parse("1");
@@ -409,6 +409,17 @@ TEST_CASE("JSON", "[Data]")
 			REQUIRE(seen[2]);
 			REQUIRE(seen[3]);
 			REQUIRE(seen[4]);
+
+
+			REQUIRE(root.Parse("[1,2,3,4,5]"));
+
+			int count = 0;
+			for (fisk::tools::Json& value : root.IterateArray())
+			{
+				REQUIRE(value.GetIf(i));
+				REQUIRE(i == ++count);
+			}
+			REQUIRE(count == 5);
 		}
 	}
 }

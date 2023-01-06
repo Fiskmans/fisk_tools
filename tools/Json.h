@@ -11,14 +11,15 @@
 
 namespace fisk::tools
 {
-	class JSONObject;
+	class Json;
 	class JsonObjectIterator
 	{
 	public:
-		using DereferenceType = std::pair<const std::string, JSONObject&>;
+		using DereferenceType = std::pair<const std::string, Json&>;
+		using BaseIterator = std::unordered_map<std::string, std::unique_ptr<Json>>::iterator;
 
 		JsonObjectIterator();
-		JsonObjectIterator(std::unordered_map<std::string, std::unique_ptr<JSONObject>>::iterator aIterator);
+		JsonObjectIterator(BaseIterator aIterator);
 
 		DereferenceType operator*();
 		void operator++();
@@ -27,39 +28,70 @@ namespace fisk::tools
 		bool operator==(const JsonObjectIterator& aOther) const;
 
 		bool myIsValid = true;
-		std::unordered_map<std::string, std::unique_ptr<JSONObject>>::iterator myIterator;
+		BaseIterator myIterator;
 	};
 
 	class JsonObjectProxy
 	{
 	public:
-		JsonObjectProxy(std::unordered_map < std::string, std::unique_ptr<JSONObject>>* aContainer);
+		JsonObjectProxy(std::unordered_map < std::string, std::unique_ptr<Json>>* aContainer);
 
 		JsonObjectIterator begin();
 		JsonObjectIterator end();
 
 	private:
-		std::unordered_map < std::string, std::unique_ptr<JSONObject>>* myContainer;
+		std::unordered_map < std::string, std::unique_ptr<Json>>* myContainer;
 	};
 
-	class JSONObject
+	class JsonArrayIterator
+	{
+	public:
+		using DereferenceType = Json&;
+		using BaseIterator = std::vector<std::unique_ptr<Json>>::iterator;
+
+		JsonArrayIterator();
+		JsonArrayIterator(BaseIterator aIterator);
+
+		DereferenceType operator*();
+		void operator++();
+		void operator++(int);
+
+		bool operator==(const JsonArrayIterator& aOther) const;
+
+		bool myIsValid = true;
+		BaseIterator myIterator;
+	};
+
+	class JsonArrayProxy
+	{
+	public:
+		JsonArrayProxy(std::vector<std::unique_ptr<Json>>* aContainer);
+
+		JsonArrayIterator begin();
+		JsonArrayIterator end();
+
+	private:
+		std::vector<std::unique_ptr<Json>>* myContainer;
+	};
+
+	class Json
 	{
 	public:
 		using NullType	  = nullptr_t;
 		using NumberType  = double;
 		using StringType  = std::string;
 		using BooleanType = bool;
-		using ArrayType	  = std::vector<std::unique_ptr<JSONObject>>;
-		using ObjectType  = std::unordered_map<std::string, std::unique_ptr<JSONObject>>;
+		using ArrayType	  = std::vector<std::unique_ptr<Json>>;
+		using ObjectType  = std::unordered_map<std::string, std::unique_ptr<Json>>;
 
-		~JSONObject()							  = default;
-		JSONObject()							  = default;
-		JSONObject(const JSONObject& aOther)	  = delete;
-		void operator=(const JSONObject& aOther)  = delete;
-		void operator==(const JSONObject& aOther) = delete;
+		~Json()								= default;
+		Json()								= default;
+		Json(const Json& aOther)			= delete;
+		void operator=(const Json& aOther)	= delete;
+		void operator==(const Json& aOther) = delete;
 
-		JSONObject& operator[](const char* aKey) const;
-		JSONObject& operator[](int aIndex) const;
+		Json& operator[](const char* aKey) const;
+		Json& operator[](int aIndex) const;
 
 		bool Parse(const char* aString);
 
@@ -67,20 +99,20 @@ namespace fisk::tools
 
 		template <typename T>
 		void AddValue(const std::string& aKey, T aValue);
-		void AddChild(const std::string& aKey, std::unique_ptr<JSONObject> aChild);
+		void AddChild(const std::string& aKey, std::unique_ptr<Json> aChild);
 
 		template <typename T>
 		void PushValue(T aValue);
-		void PushChild(std::unique_ptr<JSONObject> aChild);
+		void PushChild(std::unique_ptr<Json> aChild);
 
 		bool IsNull() const;
 		operator bool() const;
 
 		std::string Serialize(bool aPretty = false);
 
-		JSONObject& operator=(const NumberType& aValue);
-		JSONObject& operator=(const StringType& aValue);
-		JSONObject& operator=(const BooleanType& aValue);
+		Json& operator=(const NumberType& aValue);
+		Json& operator=(const StringType& aValue);
+		Json& operator=(const BooleanType& aValue);
 
 		bool GetIf(long long& aValue) const;
 		bool GetIf(long& aValue) const;
@@ -94,9 +126,10 @@ namespace fisk::tools
 		bool GetIf(ObjectType*& aValue);
 
 		JsonObjectProxy IterateObject();
+		JsonArrayProxy IterateArray();
 
 	private:
-		static JSONObject NullObject;
+		static Json NullObject;
 
 		bool ParseInternal(const char*& aString);
 		bool ParseAsValue(const char*& aBegin);
@@ -107,17 +140,17 @@ namespace fisk::tools
 	};
 
 	template <typename T>
-	inline void tools::JSONObject::AddValue(const std::string& aKey, T aValue)
+	inline void tools::Json::AddValue(const std::string& aKey, T aValue)
 	{
-		std::unique_ptr<JSONObject> child = std::make_unique<JSONObject>();
+		std::unique_ptr<Json> child = std::make_unique<Json>();
 		child							  = aValue;
 		AddChild(aKey, child);
 	}
 
 	template <typename T>
-	inline void tools::JSONObject::PushValue(T aValue)
+	inline void tools::Json::PushValue(T aValue)
 	{
-		std::unique_ptr<JSONObject> child = std::make_unique<JSONObject>();
+		std::unique_ptr<Json> child = std::make_unique<Json>();
 		child							  = aValue;
 		PushChild(child);
 	}

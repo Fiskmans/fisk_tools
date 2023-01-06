@@ -122,15 +122,15 @@ namespace fisk::tools
 		}
 	} // namespace json_help
 
-	JSONObject JSONObject::NullObject;
+	Json Json::NullObject;
 
-	bool JSONObject::Parse(const char* aString)
+	bool Json::Parse(const char* aString)
 	{
 		const char* ignored = aString;
 		return ParseInternal(ignored);
 	}
 
-	JSONObject& JSONObject::operator[](const char* aKey) const
+	Json& Json::operator[](const char* aKey) const
 	{
 		if (IsNull())
 			return NullObject;
@@ -148,7 +148,7 @@ namespace fisk::tools
 		return *(it->second);
 	}
 
-	JSONObject& JSONObject::operator[](int aIndex) const
+	Json& Json::operator[](int aIndex) const
 	{
 		if (IsNull())
 			return NullObject;
@@ -164,12 +164,12 @@ namespace fisk::tools
 		return *children[aIndex];
 	}
 
-	bool JSONObject::HasChild(const char* aKey) const
+	bool Json::HasChild(const char* aKey) const
 	{
 		return &(operator[](aKey)) != &(NullObject);
 	}
 
-	void JSONObject::AddChild(const std::string& aKey, std::unique_ptr<JSONObject> aChild)
+	void Json::AddChild(const std::string& aKey, std::unique_ptr<Json> aChild)
 	{
 		assert(aChild);
 
@@ -184,7 +184,7 @@ namespace fisk::tools
 		children[aKey] = std::move(aChild);
 	}
 
-	void JSONObject::PushChild(std::unique_ptr<JSONObject> aChild)
+	void Json::PushChild(std::unique_ptr<Json> aChild)
 	{
 		assert(aChild);
 
@@ -197,17 +197,17 @@ namespace fisk::tools
 		std::get<ArrayType>(myValue).emplace_back(std::move(aChild));
 	}
 
-	bool tools::JSONObject::IsNull() const
+	bool Json::IsNull() const
 	{
 		return std::holds_alternative<NullType>(myValue);
 	}
 
-	tools::JSONObject::operator bool() const
+	Json::operator bool() const
 	{
 		return !IsNull();
 	}
 
-	std::string JSONObject::Serialize(bool aPretty)
+	std::string Json::Serialize(bool aPretty)
 	{
 		std::stringstream stream;
 		switch (myValue.index())
@@ -229,7 +229,7 @@ namespace fisk::tools
 				ArrayType& children = std::get<ArrayType>(myValue);
 
 				bool containExpanded = false;
-				for (std::unique_ptr<JSONObject>& child : children)
+				for (std::unique_ptr<Json>& child : children)
 				{
 					switch (child->myValue.index())
 					{
@@ -244,7 +244,7 @@ namespace fisk::tools
 					stream << "\n\t";
 
 				bool first = true;
-				for (std::unique_ptr<JSONObject>& child : children)
+				for (std::unique_ptr<Json>& child : children)
 				{
 					if (!first)
 					{
@@ -302,25 +302,25 @@ namespace fisk::tools
 		return stream.str();
 	}
 
-	JSONObject& tools::JSONObject::operator=(const NumberType& aValue)
+	Json& Json::operator=(const NumberType& aValue)
 	{
 		myValue = aValue;
 		return *this;
 	}
 
-	JSONObject& tools::JSONObject::operator=(const StringType& aValue)
+	Json& Json::operator=(const StringType& aValue)
 	{
 		myValue = aValue;
 		return *this;
 	}
 
-	JSONObject& tools::JSONObject::operator=(const BooleanType& aValue)
+	Json& Json::operator=(const BooleanType& aValue)
 	{
 		myValue = aValue;
 		return *this;
 	}
 
-	bool tools::JSONObject::GetIf(long long& aValue) const
+	bool Json::GetIf(long long& aValue) const
 	{
 		if (!std::holds_alternative<NumberType>(myValue))
 			return false;
@@ -329,7 +329,7 @@ namespace fisk::tools
 		return true;
 	}
 
-	bool tools::JSONObject::GetIf(long& aValue) const
+	bool Json::GetIf(long& aValue) const
 	{
 		if (!std::holds_alternative<NumberType>(myValue))
 			return false;
@@ -338,7 +338,7 @@ namespace fisk::tools
 		return true;
 	}
 
-	bool tools::JSONObject::GetIf(size_t& aValue) const
+	bool Json::GetIf(size_t& aValue) const
 	{
 		if (!std::holds_alternative<NumberType>(myValue))
 			return false;
@@ -347,7 +347,7 @@ namespace fisk::tools
 		return true;
 	}
 
-	bool tools::JSONObject::GetIf(int& aValue) const
+	bool Json::GetIf(int& aValue) const
 	{
 		if (!std::holds_alternative<NumberType>(myValue))
 			return false;
@@ -356,7 +356,7 @@ namespace fisk::tools
 		return true;
 	}
 
-	bool tools::JSONObject::GetIf(double& aValue) const
+	bool Json::GetIf(double& aValue) const
 	{
 		if (!std::holds_alternative<NumberType>(myValue))
 			return false;
@@ -365,7 +365,7 @@ namespace fisk::tools
 		return true;
 	}
 
-	bool tools::JSONObject::GetIf(float& aValue) const
+	bool Json::GetIf(float& aValue) const
 	{
 		if (!std::holds_alternative<NumberType>(myValue))
 			return false;
@@ -374,7 +374,7 @@ namespace fisk::tools
 		return true;
 	}
 
-	bool tools::JSONObject::GetIf(std::string& aValue) const
+	bool Json::GetIf(std::string& aValue) const
 	{
 		if (!std::holds_alternative<StringType>(myValue))
 			return false;
@@ -383,7 +383,7 @@ namespace fisk::tools
 		return true;
 	}
 
-	bool tools::JSONObject::GetIf(bool& aValue) const
+	bool Json::GetIf(bool& aValue) const
 	{
 		if (!std::holds_alternative<BooleanType>(myValue))
 			return false;
@@ -392,7 +392,7 @@ namespace fisk::tools
 		return true;
 	}
 
-	bool tools::JSONObject::GetIf(ArrayType*& aValue)
+	bool Json::GetIf(ArrayType*& aValue)
 	{
 		if (!std::holds_alternative<ArrayType>(myValue))
 			return false;
@@ -401,7 +401,7 @@ namespace fisk::tools
 		return true;
 	}
 
-	bool tools::JSONObject::GetIf(ObjectType*& aValue)
+	bool Json::GetIf(ObjectType*& aValue)
 	{
 		if (!std::holds_alternative<ObjectType>(myValue))
 			return false;
@@ -410,14 +410,21 @@ namespace fisk::tools
 		return true;
 	}
 
-	JsonObjectProxy tools::JSONObject::IterateObject()
+	JsonObjectProxy Json::IterateObject()
 	{
 		ObjectType* obj = nullptr;
 		GetIf(obj);
 		return JsonObjectProxy(obj);
 	}
 
-	bool tools::JSONObject::ParseInternal(const char*& aString)
+	JsonArrayProxy tools::Json::IterateArray()
+	{
+		ArrayType* arr = nullptr;
+		GetIf(arr);
+		return JsonArrayProxy(arr);
+	}
+
+	bool Json::ParseInternal(const char*& aString)
 	{
 		const char*& at = aString;
 
@@ -492,7 +499,7 @@ namespace fisk::tools
 				if (*at == '\0')
 					return false;
 
-				std::unique_ptr<JSONObject> child = std::make_unique<JSONObject>();
+				std::unique_ptr<Json> child = std::make_unique<Json>();
 				if (!child->ParseInternal(at))
 					return false;
 
@@ -500,7 +507,7 @@ namespace fisk::tools
 			}
 			else if (std::holds_alternative<ArrayType>(myValue))
 			{
-				std::unique_ptr<JSONObject> child = std::make_unique<JSONObject>();
+				std::unique_ptr<Json> child = std::make_unique<Json>();
 				if (!child->ParseInternal(at))
 					return false;
 
@@ -540,7 +547,7 @@ namespace fisk::tools
 		return true;
 	}
 
-	bool JSONObject::ParseAsValue(const char*& aPtr)
+	bool Json::ParseAsValue(const char*& aPtr)
 	{
 		switch (*aPtr)
 		{
@@ -664,12 +671,12 @@ namespace fisk::tools
 		return true;
 	}
 
-	JsonObjectProxy::JsonObjectProxy(std::unordered_map<std::string, std::unique_ptr<JSONObject>>* aContainer)
+	JsonObjectProxy::JsonObjectProxy(std::unordered_map<std::string, std::unique_ptr<Json>>* aContainer)
 		: myContainer(aContainer)
 	{
 	}
 
-	JsonObjectIterator tools::JsonObjectProxy::begin()
+	JsonObjectIterator JsonObjectProxy::begin()
 	{
 		if (myContainer)
 			return JsonObjectIterator(myContainer->begin());
@@ -677,7 +684,7 @@ namespace fisk::tools
 		return JsonObjectIterator();
 	}
 
-	JsonObjectIterator tools::JsonObjectProxy::end()
+	JsonObjectIterator JsonObjectProxy::end()
 	{
 		if (myContainer)
 			return JsonObjectIterator(myContainer->end());
@@ -690,8 +697,7 @@ namespace fisk::tools
 	{
 	}
 
-	JsonObjectIterator::JsonObjectIterator(
-		std::unordered_map<std::string, std::unique_ptr<JSONObject>>::iterator aIterator)
+	JsonObjectIterator::JsonObjectIterator(BaseIterator aIterator)
 		: myIterator(aIterator)
 	{
 	}
@@ -701,17 +707,17 @@ namespace fisk::tools
 		return DereferenceType(myIterator->first, *myIterator->second);
 	}
 
-	void tools::JsonObjectIterator::operator++()
+	void JsonObjectIterator::operator++()
 	{
 		++myIterator;
 	}
 
-	void tools::JsonObjectIterator::operator++(int)
+	void JsonObjectIterator::operator++(int)
 	{
 		myIterator++;
 	}
 
-	bool tools::JsonObjectIterator::operator==(const JsonObjectIterator& aOther) const
+	bool JsonObjectIterator::operator==(const JsonObjectIterator& aOther) const
 	{
 		if (!myIsValid && !aOther.myIsValid)
 			return true;
@@ -720,6 +726,63 @@ namespace fisk::tools
 		assert(aOther.myIsValid);
 
 		return myIterator == aOther.myIterator;
+	}
+
+	JsonArrayIterator::JsonArrayIterator()
+		: myIsValid(false)
+	{
+	}
+
+	JsonArrayIterator::JsonArrayIterator(BaseIterator aIterator)
+		: myIterator(aIterator)
+	{
+	}
+
+	JsonArrayIterator::DereferenceType JsonArrayIterator::operator*()
+	{
+		return **myIterator;
+	}
+
+	void JsonArrayIterator::operator++()
+	{
+		++myIterator;
+	}
+
+	void JsonArrayIterator::operator++(int)
+	{
+		myIterator++;
+	}
+
+	bool JsonArrayIterator::operator==(const JsonArrayIterator& aOther) const
+	{
+		if (!myIsValid && !aOther.myIsValid)
+			return true;
+
+		assert(myIsValid);
+		assert(aOther.myIsValid);
+
+		return myIterator == aOther.myIterator;
+	}
+
+	JsonArrayProxy::JsonArrayProxy(std::vector<std::unique_ptr<Json>>* aContainer)
+		: myContainer(aContainer)
+	{
+	}
+
+	JsonArrayIterator JsonArrayProxy::begin()
+	{
+		if (myContainer)
+			return JsonArrayIterator(myContainer->begin());
+
+		return JsonArrayIterator();
+	}
+
+	JsonArrayIterator JsonArrayProxy::end()
+	{
+		if (myContainer)
+			return JsonArrayIterator(myContainer->end());
+
+		return JsonArrayIterator();
 	}
 
 } // namespace fisk::tools
