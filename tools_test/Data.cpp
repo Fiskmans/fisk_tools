@@ -385,6 +385,30 @@ TEST_CASE("JSON", "[Data]")
 			REQUIRE(arr->size() == 1);
 			REQUIRE(arr->at(0));
 			REQUIRE(arr->at(0).get() == &root[0]);
+		
+			REQUIRE(root.Parse(R"({
+									"0": 0,	
+									"1": 1,
+									"2": 2, 
+									"3": 3, 
+									"4": 4 
+								})"));
+
+
+			bool seen[5] = {false, false, false, false, false};
+			for (const auto& [key, value] : root.IterateObject())
+			{
+				REQUIRE(value.GetIf(i));
+				REQUIRE(std::to_string(i) == key);
+				REQUIRE(i < 6);
+				seen[i] = true;
+			}
+
+			REQUIRE(seen[0]);
+			REQUIRE(seen[1]);
+			REQUIRE(seen[2]);
+			REQUIRE(seen[3]);
+			REQUIRE(seen[4]);
 		}
 	}
 }

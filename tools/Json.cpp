@@ -392,7 +392,7 @@ namespace fisk::tools
 		return true;
 	}
 
-	bool tools::JSONObject::GetIf(ArrayType*& aValue) 
+	bool tools::JSONObject::GetIf(ArrayType*& aValue)
 	{
 		if (!std::holds_alternative<ArrayType>(myValue))
 			return false;
@@ -408,6 +408,13 @@ namespace fisk::tools
 
 		aValue = &std::get<ObjectType>(myValue);
 		return true;
+	}
+
+	JsonObjectProxy tools::JSONObject::IterateObject()
+	{
+		ObjectType* obj = nullptr;
+		GetIf(obj);
+		return JsonObjectProxy(obj);
 	}
 
 	bool tools::JSONObject::ParseInternal(const char*& aString)
@@ -449,7 +456,6 @@ namespace fisk::tools
 				return true;
 		}
 
-
 		while (*at != '\0')
 		{
 			json_help::FindStart(at);
@@ -479,7 +485,7 @@ namespace fisk::tools
 
 				if (*at != ':')
 					return false;
-				
+
 				at++;
 				json_help::FindStart(at);
 
@@ -522,7 +528,7 @@ namespace fisk::tools
 				assert(false);
 			}
 
-			if (*at == ',')
+			if (*at != ',')
 				return false;
 
 			at++;
@@ -656,6 +662,64 @@ namespace fisk::tools
 		myValue = val;
 
 		return true;
+	}
+
+	JsonObjectProxy::JsonObjectProxy(std::unordered_map<std::string, std::unique_ptr<JSONObject>>* aContainer)
+		: myContainer(aContainer)
+	{
+	}
+
+	JsonObjectIterator tools::JsonObjectProxy::begin()
+	{
+		if (myContainer)
+			return JsonObjectIterator(myContainer->begin());
+
+		return JsonObjectIterator();
+	}
+
+	JsonObjectIterator tools::JsonObjectProxy::end()
+	{
+		if (myContainer)
+			return JsonObjectIterator(myContainer->end());
+
+		return JsonObjectIterator();
+	}
+
+	JsonObjectIterator::JsonObjectIterator()
+		: myIsValid(false)
+	{
+	}
+
+	JsonObjectIterator::JsonObjectIterator(
+		std::unordered_map<std::string, std::unique_ptr<JSONObject>>::iterator aIterator)
+		: myIterator(aIterator)
+	{
+	}
+
+	JsonObjectIterator::DereferenceType JsonObjectIterator::operator*()
+	{
+		return DereferenceType(myIterator->first, *myIterator->second);
+	}
+
+	void tools::JsonObjectIterator::operator++()
+	{
+		++myIterator;
+	}
+
+	void tools::JsonObjectIterator::operator++(int)
+	{
+		myIterator++;
+	}
+
+	bool tools::JsonObjectIterator::operator==(const JsonObjectIterator& aOther) const
+	{
+		if (!myIsValid && !aOther.myIsValid)
+			return true;
+
+		assert(myIsValid);
+		assert(aOther.myIsValid);
+
+		return myIterator == aOther.myIterator;
 	}
 
 } // namespace fisk::tools

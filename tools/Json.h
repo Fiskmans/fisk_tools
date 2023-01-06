@@ -11,6 +11,37 @@
 
 namespace fisk::tools
 {
+	class JSONObject;
+	class JsonObjectIterator
+	{
+	public:
+		using DereferenceType = std::pair<const std::string, JSONObject&>;
+
+		JsonObjectIterator();
+		JsonObjectIterator(std::unordered_map<std::string, std::unique_ptr<JSONObject>>::iterator aIterator);
+
+		DereferenceType operator*();
+		void operator++();
+		void operator++(int);
+
+		bool operator==(const JsonObjectIterator& aOther) const;
+
+		bool myIsValid = true;
+		std::unordered_map<std::string, std::unique_ptr<JSONObject>>::iterator myIterator;
+	};
+
+	class JsonObjectProxy
+	{
+	public:
+		JsonObjectProxy(std::unordered_map < std::string, std::unique_ptr<JSONObject>>* aContainer);
+
+		JsonObjectIterator begin();
+		JsonObjectIterator end();
+
+	private:
+		std::unordered_map < std::string, std::unique_ptr<JSONObject>>* myContainer;
+	};
+
 	class JSONObject
 	{
 	public:
@@ -62,6 +93,8 @@ namespace fisk::tools
 		bool GetIf(ArrayType*& aValue);
 		bool GetIf(ObjectType*& aValue);
 
+		JsonObjectProxy IterateObject();
+
 	private:
 		static JSONObject NullObject;
 
@@ -88,6 +121,9 @@ namespace fisk::tools
 		child							  = aValue;
 		PushChild(child);
 	}
+
+
+	
 
 } // namespace fisk::tools
 
