@@ -16,7 +16,7 @@ namespace fisk::tools
 	{
 	public:
 		using DereferenceType = std::pair<const std::string, Json&>;
-		using BaseIterator = std::unordered_map<std::string, std::unique_ptr<Json>>::iterator;
+		using BaseIterator	  = std::unordered_map<std::string, std::unique_ptr<Json>>::iterator;
 
 		JsonObjectIterator();
 		JsonObjectIterator(BaseIterator aIterator);
@@ -34,20 +34,20 @@ namespace fisk::tools
 	class JsonObjectProxy
 	{
 	public:
-		JsonObjectProxy(std::unordered_map < std::string, std::unique_ptr<Json>>* aContainer);
+		JsonObjectProxy(std::unordered_map<std::string, std::unique_ptr<Json>>* aContainer);
 
 		JsonObjectIterator begin();
 		JsonObjectIterator end();
 
 	private:
-		std::unordered_map < std::string, std::unique_ptr<Json>>* myContainer;
+		std::unordered_map<std::string, std::unique_ptr<Json>>* myContainer;
 	};
 
 	class JsonArrayIterator
 	{
 	public:
 		using DereferenceType = Json&;
-		using BaseIterator = std::vector<std::unique_ptr<Json>>::iterator;
+		using BaseIterator	  = std::vector<std::unique_ptr<Json>>::iterator;
 
 		JsonArrayIterator();
 		JsonArrayIterator(BaseIterator aIterator);
@@ -98,12 +98,12 @@ namespace fisk::tools
 		bool HasChild(const char* aKey) const;
 
 		template <typename T>
-		void AddValue(const std::string& aKey, T aValue);
-		void AddChild(const std::string& aKey, std::unique_ptr<Json> aChild);
+		Json& AddValue(const std::string& aKey, T aValue);
+		Json& AddChild(const std::string& aKey, std::unique_ptr<Json> aChild = std::make_unique<Json>());
 
 		template <typename T>
-		void PushValue(T aValue);
-		void PushChild(std::unique_ptr<Json> aChild);
+		Json& PushValue(T aValue);
+		Json& PushChild(std::unique_ptr<Json> aChild = std::make_unique<Json>());
 
 		bool IsNull() const;
 		operator bool() const;
@@ -140,23 +140,30 @@ namespace fisk::tools
 	};
 
 	template <typename T>
-	inline void tools::Json::AddValue(const std::string& aKey, T aValue)
+	inline Json& tools::Json::AddValue(const std::string& aKey, T aValue)
 	{
+		if (this == &NullObject)
+			return NullObject;
+
 		std::unique_ptr<Json> child = std::make_unique<Json>();
-		child							  = aValue;
-		AddChild(aKey, child);
+		child						= aValue;
+		Json& out					= *child;
+		AddChild(aKey, std::move(child));
+		return out;
 	}
 
 	template <typename T>
-	inline void tools::Json::PushValue(T aValue)
+	inline Json& tools::Json::PushValue(T aValue)
 	{
+		if (this == &NullObject)
+			return NullObject;
+
 		std::unique_ptr<Json> child = std::make_unique<Json>();
-		child							  = aValue;
-		PushChild(child);
+		child						= aValue;
+		Json& out					= *child;
+		PushChild(std::move(child));
+		return out;
 	}
-
-
-	
 
 } // namespace fisk::tools
 

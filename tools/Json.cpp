@@ -169,32 +169,40 @@ namespace fisk::tools
 		return &(operator[](aKey)) != &(NullObject);
 	}
 
-	void Json::AddChild(const std::string& aKey, std::unique_ptr<Json> aChild)
+	Json& Json::AddChild(const std::string& aKey, std::unique_ptr<Json> aChild)
 	{
 		assert(aChild);
+
+		if (this == &NullObject)
+			return NullObject;
 
 		if (std::holds_alternative<NullType>(myValue))
 			myValue = ObjectType();
 
 		if (!std::holds_alternative<ObjectType>(myValue))
-			return;
+			return NullObject;
 
-		ObjectType& children = std::get<ObjectType>(myValue);
-
-		children[aKey] = std::move(aChild);
+		Json& out							= *aChild;
+		std::get<ObjectType>(myValue)[aKey] = std::move(aChild);
+		return out;
 	}
 
-	void Json::PushChild(std::unique_ptr<Json> aChild)
+	Json& Json::PushChild(std::unique_ptr<Json> aChild)
 	{
 		assert(aChild);
+
+		if (this == &NullObject)
+			return NullObject;
 
 		if (std::holds_alternative<NullType>(myValue))
 			myValue = ArrayType();
 
 		if (!std::holds_alternative<ArrayType>(myValue))
-			return;
+			return NullObject;
 
+		Json& out = *aChild;
 		std::get<ArrayType>(myValue).emplace_back(std::move(aChild));
+		return out;
 	}
 
 	bool Json::IsNull() const
@@ -304,19 +312,22 @@ namespace fisk::tools
 
 	Json& Json::operator=(const NumberType& aValue)
 	{
-		myValue = aValue;
+		if (this != &NullObject)
+			myValue = aValue;
 		return *this;
 	}
 
 	Json& Json::operator=(const StringType& aValue)
 	{
-		myValue = aValue;
+		if (this != &NullObject)
+			myValue = aValue;
 		return *this;
 	}
 
 	Json& Json::operator=(const BooleanType& aValue)
 	{
-		myValue = aValue;
+		if (this != &NullObject)
+			myValue = aValue;
 		return *this;
 	}
 
@@ -541,8 +552,7 @@ namespace fisk::tools
 			at++;
 		}
 
-		if (*at == '\0')
-			return false;
+		at++;
 
 		return true;
 	}
