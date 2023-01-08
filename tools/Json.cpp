@@ -158,7 +158,7 @@ namespace fisk::tools
 
 		const ArrayType& children = std::get<ArrayType>(myValue);
 
-		if (aIndex >= children.size())
+		if (aIndex >= children.size() || aIndex < 0)
 			return NullObject;
 
 		return *children[aIndex];
@@ -310,27 +310,6 @@ namespace fisk::tools
 		return stream.str();
 	}
 
-	Json& Json::operator=(const NumberType& aValue)
-	{
-		if (this != &NullObject)
-			myValue = aValue;
-		return *this;
-	}
-
-	Json& Json::operator=(const StringType& aValue)
-	{
-		if (this != &NullObject)
-			myValue = aValue;
-		return *this;
-	}
-
-	Json& Json::operator=(const BooleanType& aValue)
-	{
-		if (this != &NullObject)
-			myValue = aValue;
-		return *this;
-	}
-
 	bool Json::GetIf(long long& aValue) const
 	{
 		if (!std::holds_alternative<NumberType>(myValue))
@@ -403,36 +382,20 @@ namespace fisk::tools
 		return true;
 	}
 
-	bool Json::GetIf(ArrayType*& aValue)
-	{
-		if (!std::holds_alternative<ArrayType>(myValue))
-			return false;
-
-		aValue = &std::get<ArrayType>(myValue);
-		return true;
-	}
-
-	bool Json::GetIf(ObjectType*& aValue)
-	{
-		if (!std::holds_alternative<ObjectType>(myValue))
-			return false;
-
-		aValue = &std::get<ObjectType>(myValue);
-		return true;
-	}
-
 	JsonObjectProxy Json::IterateObject()
 	{
-		ObjectType* obj = nullptr;
-		GetIf(obj);
-		return JsonObjectProxy(obj);
+		if (!std::holds_alternative<ObjectType>(myValue))
+			return JsonObjectProxy(nullptr);
+
+		return JsonObjectProxy(&std::get<ObjectType>(myValue));
 	}
 
 	JsonArrayProxy tools::Json::IterateArray()
 	{
-		ArrayType* arr = nullptr;
-		GetIf(arr);
-		return JsonArrayProxy(arr);
+		if (!std::holds_alternative<ArrayType>(myValue))
+			return JsonArrayProxy(nullptr);
+
+		return JsonArrayProxy(&std::get<ArrayType>(myValue));
 	}
 
 	bool Json::ParseInternal(const char*& aString)

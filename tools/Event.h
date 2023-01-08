@@ -1,9 +1,9 @@
 #ifndef TOOLS_EVENT_H
 #define TOOLS_EVENT_H
 
+#include <cassert>
 #include <functional>
 #include <unordered_map>
-#include <cassert>
 
 #include "tools/Logger.h"
 
@@ -15,12 +15,16 @@ namespace fisk::tools
 	class Event
 	{
 	public:
+		Event()						 = default;
+		Event(const Event&)			 = delete;
+		void operator=(const Event&) = delete;
+
 		[[nodiscard]] std::unique_ptr<EventRegistration> Register(std::function<void(Args...)> aCallback);
 
 		void Fire(Args... aArgs) const;
 
 	private:
-		using EventID				  = size_t;
+		using EventID						 = size_t;
 		static constexpr EventID NullEventId = 0;
 
 		inline EventID NextID()
@@ -34,7 +38,6 @@ namespace fisk::tools
 		std::unordered_map<EventID, std::function<void(Args...)>> myCallbacks;
 	};
 
-	
 	template <typename... Args>
 	class SingleFireEvent
 	{
@@ -59,6 +62,9 @@ namespace fisk::tools
 	class EventRegistration
 	{
 	public:
+		EventRegistration()							= default;
+		EventRegistration(const EventRegistration&) = delete;
+		void operator=(const EventRegistration&)	= delete;
 		~EventRegistration();
 
 	private:

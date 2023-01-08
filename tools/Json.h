@@ -2,6 +2,7 @@
 #ifndef FISK_TOOLS_JSON_H
 #define FISK_TOOLS_JSON_H
 
+#include <concepts>
 #include <memory>
 #include <optional>
 #include <string>
@@ -95,24 +96,23 @@ namespace fisk::tools
 
 		bool Parse(const char* aString);
 
-		bool HasChild(const char* aKey) const;
-
-		template <typename T>
-		Json& AddValue(const std::string& aKey, T aValue);
+		template<class T>
+		Json& AddValue(const std::string& aKey, const T& aValue);
 		Json& AddChild(const std::string& aKey, std::unique_ptr<Json> aChild = std::make_unique<Json>());
 
-		template <typename T>
-		Json& PushValue(T aValue);
+		template<class T>
+		Json& PushValue(const T& aValue);
 		Json& PushChild(std::unique_ptr<Json> aChild = std::make_unique<Json>());
+
+		bool HasChild(const char* aKey) const;
 
 		bool IsNull() const;
 		operator bool() const;
 
 		std::string Serialize(bool aPretty = false);
 
-		Json& operator=(const NumberType& aValue);
-		Json& operator=(const StringType& aValue);
-		Json& operator=(const BooleanType& aValue);
+		template<class T>
+		Json& operator=(T aValue);
 
 		bool GetIf(long long& aValue) const;
 		bool GetIf(long& aValue) const;
@@ -122,8 +122,6 @@ namespace fisk::tools
 		bool GetIf(float& aValue) const;
 		bool GetIf(std::string& aValue) const;
 		bool GetIf(bool& aValue) const;
-		bool GetIf(ArrayType*& aValue);
-		bool GetIf(ObjectType*& aValue);
 
 		JsonObjectProxy IterateObject();
 		JsonArrayProxy IterateArray();
@@ -139,30 +137,68 @@ namespace fisk::tools
 		AnyType myValue;
 	};
 
-	template <typename T>
-	inline Json& tools::Json::AddValue(const std::string& aKey, T aValue)
+	template <class T>
+	inline Json& tools::Json::AddValue(const std::string& aKey, const T& aValue)
 	{
 		if (this == &NullObject)
 			return NullObject;
 
 		std::unique_ptr<Json> child = std::make_unique<Json>();
-		child						= aValue;
+		*child						= aValue;
 		Json& out					= *child;
 		AddChild(aKey, std::move(child));
 		return out;
 	}
 
-	template <typename T>
-	inline Json& tools::Json::PushValue(T aValue)
+	template <class T>
+	inline Json& tools::Json::PushValue(const T& aValue)
 	{
 		if (this == &NullObject)
 			return NullObject;
 
 		std::unique_ptr<Json> child = std::make_unique<Json>();
-		child						= aValue;
+		*child						= aValue;
 		Json& out					= *child;
 		PushChild(std::move(child));
 		return out;
+	}
+
+	template <>
+	inline Json& Json::operator=<Json::BooleanType>(BooleanType aValue)
+	{
+		if (this != &NullObject)
+			myValue = aValue;
+
+		return *this;
+	}
+	
+	template <>
+	inline Json& Json::operator=<const Json::StringType&>(const StringType& aValue)
+	{
+		if (this != &NullObject)
+			myValue = aValue;
+
+		return *this;
+	}
+
+	template <>
+	inline Json& Json::operator=<const char*>(const char* aValue)
+	{
+		if (this != &NullObject)
+			myValue = aValue;
+
+		return *this;
+	}
+
+	template <class T>
+	inline Json& Json::operator=(T aValue)
+	{
+		static_assert(!std::is_same_v<T, bool>);
+
+		if (this != &NullObject)
+			myValue = static_cast<NumberType>(aValue);
+
+		return *this;
 	}
 
 } // namespace fisk::tools

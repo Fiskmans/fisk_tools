@@ -71,7 +71,7 @@ TEST_CASE("WriteStream", "[Data]")
 
 		SECTION("Spilling over")
 		{
-			const uint8_t secondData[] = {9, 10, 11, 12, 13, 14, 15};
+			const uint8_t secondData[] = { 9, 10, 11, 12, 13, 14, 15, 16 };
 			ws.WriteData(secondData, 8);
 
 			std::shared_ptr<fisk::tools::StreamSegment> streamData = ws.Get();
@@ -330,14 +330,13 @@ TEST_CASE("JSON", "[Data]")
 			size_t sz	 = 2;
 			float f		 = 0.f;
 			double d	 = 0.f;
-			fisk::tools::Json::ObjectType* obj;
-			fisk::tools::Json::ArrayType* arr;
-
+			bool b		 = false;
 
 			root.Parse("1");
 			REQUIRE(root);
 			REQUIRE(root.GetIf(i));
 			REQUIRE(!root.GetIf(s));
+			REQUIRE(!root.GetIf(b));
 			REQUIRE(i == 1);
 			REQUIRE(root.GetIf(l));
 			REQUIRE(l == 1);
@@ -352,13 +351,14 @@ TEST_CASE("JSON", "[Data]")
 			REQUIRE(root["x"].GetIf(i));
 			REQUIRE(i == 2);
 
-			i = -1;
+			REQUIRE(root.Parse("true"));
+			REQUIRE(root.GetIf(b));
+			REQUIRE(b);
+			REQUIRE(root.Parse("false"));
+			REQUIRE(root.GetIf(b));
+			REQUIRE(!b);
 
-			REQUIRE(root.GetIf(obj));
-			REQUIRE(obj);
-			REQUIRE(obj->size() == 1);
-			REQUIRE(obj->count("x") == 1);
-			REQUIRE(obj->at("x").get() == &root["x"]);
+			i = -1;
 
 			using namespace std::string_view_literals;
 			REQUIRE(root.Parse("\"hello\""));
@@ -379,12 +379,6 @@ TEST_CASE("JSON", "[Data]")
 			REQUIRE(root[0]);
 			REQUIRE(root[0].GetIf(i));
 			REQUIRE(i == 10);
-
-			REQUIRE(root.GetIf(arr));
-			REQUIRE(arr);
-			REQUIRE(arr->size() == 1);
-			REQUIRE(arr->at(0));
-			REQUIRE(arr->at(0).get() == &root[0]);
 		
 			REQUIRE(root.Parse(R"({
 									"0": 0,	
@@ -421,5 +415,34 @@ TEST_CASE("JSON", "[Data]")
 			}
 			REQUIRE(count == 5);
 		}
+	}
+
+	{
+		fisk::tools::Json root;
+		root = "hello";
+
+		std::string s;
+		REQUIRE(root.GetIf(s));
+		REQUIRE(s == "hello");
+	}
+	{
+		fisk::tools::Json root;
+		root = 1;
+
+		int i;
+		REQUIRE(root.GetIf(i));
+		REQUIRE(i == 1);
+	}
+	{
+		fisk::tools::Json root;
+		root = true;
+
+		bool b;
+		REQUIRE(root.GetIf(b));
+		REQUIRE(b);
+
+		root = false;
+		REQUIRE(root.GetIf(b));
+		REQUIRE(!b);
 	}
 }

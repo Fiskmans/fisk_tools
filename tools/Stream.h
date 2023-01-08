@@ -20,7 +20,7 @@ namespace fisk::tools
 		size_t mySize = 0;
 		std::shared_ptr<StreamSegment> myNext;
 
-		uint8_t myData[CHUNK_SIZE];
+		uint8_t myData[CHUNK_SIZE] = {};
 	};
 
 	struct StreamOffset
