@@ -424,6 +424,14 @@ TEST_CASE("JSON", "[Data]")
 		std::string s;
 		REQUIRE(root.GetIf(s));
 		REQUIRE(s == "hello");
+
+		s = "test1";
+		root = s;
+
+		s = "not_overwritten";
+		REQUIRE(root.GetIf(s));
+		REQUIRE(s == "test1");
+
 	}
 	{
 		fisk::tools::Json root;

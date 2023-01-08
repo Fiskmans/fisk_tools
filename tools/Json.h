@@ -182,6 +182,15 @@ namespace fisk::tools
 	}
 
 	template <>
+	inline Json& Json::operator=<Json::StringType>(StringType aValue)
+	{
+		if (this != &NullObject)
+			myValue = aValue;
+
+		return *this;
+	}
+
+	template <>
 	inline Json& Json::operator=<const char*>(const char* aValue)
 	{
 		if (this != &NullObject)
@@ -193,7 +202,7 @@ namespace fisk::tools
 	template <class T>
 	inline Json& Json::operator=(T aValue)
 	{
-		static_assert(!std::is_same_v<T, bool>);
+		static_assert(!std::is_same_v<T, BooleanType>);
 
 		if (this != &NullObject)
 			myValue = static_cast<NumberType>(aValue);
