@@ -228,8 +228,132 @@
  Takes in the [stream](#write-stream) to write to
  ___
 </details>
+<details id="json"> <summary>Json</summary>
+ 
+ ```
+ #include "tools/JSON.h"
+ fisk::tools::Json
+ ```
+ Json with a low amount of boilerplate and no rough edges
+ ___
+ `Json& operator[](const char* aKey)`  
+ Accesses the child named `aKey`  
+ If `this` is not of `ObjectType` always returns a reference to the [NullObject](#nullobject)  
+ Returns a reference to the child or to the [NullObject](#nullobject) if non-existant
+ ___
+ `Json& operator[](int aIndex)`  
+ Accesses the child at `aIndex`  
+ If `this` is not of `ArrayType` always returns a reference to the [NullObject](#nullobject)  
+ Returns a reference to the child or to the [NullObject](#nullobject) if out-of-bounds
+ ___
+ `bool Parse(const char* aString)`  
+ Parses a json string  
+ Returns `true` if successful and `false` otherwise. 
+ ___
+ `Json& AddValue(std::string aKey, T aValue)`  
+Creates a named child and sets it equal to `aValue`  
+ Upgrades `this` from `NullType` to `ObjectType`, fails if any other type  
+ Returns a reference to the newly created child or the [NullObject](#nullobject) if failed
+ ___
+ `Json& AddValue(std::string aKey, std::unique_ptr<Json> aChild)`  
+ Adds a named child  
+ Upgrades `this` from `NullType` to `ObjectType`, fails if any other type  
+ Returns a reference to the child or the [NullObject](#nullobject) if failed
+ ___
+ `Json& PushValue(T aValue)`  
+ Pushes a child and sets it equal to `aValue`  
+ Upgrades `this` from `NullType` to `ArrayType`, fails if any other type  
+ Returns a reference to the newly created child or the [NullObject](#nullobject) if failed
+ ___
+ `Json& AddValue(std::string aKey, std::unique_ptr<Json> aChild)`  
+ Pushes a child  
+ Upgrades `this` from `NullType` to `ArrayType`, fails if any other type  
+ Returns a reference to the child or the [NullObject](#nullobject) if failed
+ ___
+ `bool HasChild(const char* aKey)`  
+ Checks if `this` has a child named `aKey`  
+ Returns `false` if this is not of type `Object` otherwise:  
+ Returns `true` if there is a child named `aKey`
+ ___
+ `bool IsNull()`  
+  Returns `true` if `this` is of `NullType`
+ ___
+ `operator bool()`  
+  Returns the inverse of `IsNull()`
+ ___
+ `std::string Serialize(bool aPretty)`  
+ Returns a string representing `this` and all of it's children recursivly  
+ Formated in a human readable way if `aPretty` is `true` otherwise as compact as possible
+ ___
+ `Json& operator=(T aValue)`  
+ Assigns to `this`, changing type as necessary  
+ Returns a referense to `this` to allow chaining  
+ Supports `NumberType`, `StringType`, and `BooleanType` and anything convertable to any of these
+ ___
+ `bool GetIf(T& aValue)`  
+ Gets the stored value of `this` if it is of a compatible type  
+ Returns `true` if the value could be loaded `false` otherwise  
+ Supports `long long`, `long`, `size_t`, `int`, `double`, `float`, `std::string`, and `bool` 
+ ___
+ `JsonObjectProxy IterateObject()`  
+ Returns a proxy object of `this` that can be used to iterate over all the named children in no particular order  
+ **example**  
+ ```cpp
+ fisk::tools::Json root;
+ root.Parse(R"(
+ {
+  "foo": 10,
+  "bar": {}
+ })");
+ 
+ for (const auto& [key, value] : root.IterateObject()) // the full type returned from the iterator is `JsonObjectIterator::DereferenceType` i.e. 'std::pair<const std::string, Json&>'
+ {
+  // key is a 'std::string' with the key
+  // value is a 'fisk::tools::Json&' with the value associated with key
+ }
+ ```
+ ___
+ `JsonObjectProxy IterateObject()`  
+ Returns a proxy object of `this` that can be used to iterate over all the unamed children in order  
+ **example**  
+ ```cpp
+ fisk::tools::Json root;
+ root.Parse(R"(
+  [ 1, 2, 3, "hello", 0.01, true, null, 4]
+ )");
+ 
+ for (fisk::tools::Json& value : root.IterateArray())
+ { 
+  // goes through the sequence 1, 2, 3, "hello", 0.01, true, null, 4 
+ }
+ ```
+ ___
+ ### NullObject
+ The `NullObject` is a special `Json` object that cannot be modified and any access on it will get you a reference back to it  
+ It tests true for `IsNull()`, so does any default constructed `Json` or parsed `null` as well so don't use this to explicitly check for the `NullObject`  
+ Attempting to add children to the `NullObject` always fails and returns a reference back to the `NullObject`  
+ Attempting to get the stored value of the `NullObject` with `GetIf()` will always fail and return `false`  
+ Attempting to access any child of the `NullObject` yields a reference back to the `NullObject` this allows safetly chaining any number of accesses and `GetIf()`'s  
+ **example**
+ ```cpp
+ fisk::tools::Json root;
+ root.Parse(R"({"outer":{"inner":[{"foo":{"value": 4}}]}})");
+ 
+ root["outer"]["inner"][0]["foo"]; // succeeds all the way through
 
-
+ root["outer"]["missing"][2]["bar"]; // fails at "missing" and then keeps accessing the NullObject until the chain completes
+ 
+ int value;
+ if (root["outer"]["inner"][0]["foo"]["value"].GetIf(value))
+ {
+  //this will execute
+ }
+ if (root["outer"]["missing"][2]["bar"]["value"].GetIf(value)) // GetIf on the NullObject always fails
+ {
+  //this will not
+ }
+ ```
+</details>
 
 
 
