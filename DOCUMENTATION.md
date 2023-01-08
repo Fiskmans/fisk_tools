@@ -6,7 +6,7 @@
  #include "tools/Event.h"
  fisk::tools::Event<...>
  ```
- Stores callbacks and executes them when fired, all callbacks needs to be unregistered before destruction of the event
+ Stores callbacks and executes them when fired
  ___
  `EventReg Register(std::function<void(Args...)> aCallback)`  
  Registers a callback to be executed when the event fires  
@@ -75,6 +75,14 @@
  `TCPSocket(std::shared_ptr<Socket> aSocket)`  
  Takes in an open and connected [socket](#socket) to use for communications
  ___
+ **constructor**  
+ `TCPSocket(const char* aName, const char* aServiceOrPort, std::chrono::microseconds aTimeout)`  
+ Attempts to create a connection to `aName`  
+ `aName`: the hostname or address of the target e.g `"localhost"`, `"192.168.0.1"`, `"8.8.8.8"`, or `"google.com"`  
+ `aServiceOrPort`: the servicename or port of the the target e.g `"12345"`, `"http"`, `"80"`, or `"ssl"`  
+ `aTimeout`: how long to try for  
+ Returns a `TCPSocket`, if no connection could be made it still returns a valid `TCPSocket` but it will always return false from `Update()`
+ ___
  `bool Update()`  
  Updates the socket, flushes any pending writes and reads any available data  
  Returns `true` if all is good and `false` if the socket is no longer useful and should be discarded
@@ -90,14 +98,6 @@
  ___
  `Event<> OnDataAvailable`  
  This [event](#event) will be fired whenever there is new data on the readstream
- ___
- **Out of class**  
- `TCPSocket ConnectToTCPByName(const char* aName, const char* aServiceOrPort, std::chrono::microseconds aTimeout)`  
- Attempts to create a connection to `aName`  
- `aName`: the hostname or address of the target e.g `"localhost"`, `"192.168.0.1"`, `"8.8.8.8"`, or `"google.com"`  
- `aServiceOrPort`: the servicename or port of the the target e.g `"12345"`, `"http"`, `"80"`, or `"ssl"`  
- `aTimeout`: how long to try for  
- Returns a `TCPSocket`, if no connection could be made it still returns a valid `TCPSocket` but it will always return false from `Update()`
  ___
 </details>
 <details id="tcp-listen-socket"> <summary>TCP Listen Socket</summary>

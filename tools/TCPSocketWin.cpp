@@ -24,6 +24,38 @@ namespace fisk::tools
 		}
 	}
 
+	TCPSocket::TCPSocket(const char* aName, const char* aServiceOrPort, std::chrono::microseconds aTimeout)
+	{
+		mySocket = std::make_shared<Socket>();
+		mySocket->myValue = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+		sockaddr_in6 localAddress;
+		DWORD localAddressSize = sizeof(localAddress);
+
+		sockaddr_in6 remoteAddress;
+		DWORD remoteAddressSize = sizeof(remoteAddress);
+
+		std::chrono::seconds seconds	 = std::chrono::duration_cast<std::chrono::seconds>(aTimeout);
+		std::chrono::microseconds micros = aTimeout - std::chrono::duration_cast<std::chrono::microseconds>(seconds);
+
+		timeval timeout;
+		timeout.tv_sec	= seconds.count();
+		timeout.tv_usec = micros.count();
+
+		BOOL result = ::WSAConnectByNameA(mySocket->myValue, aName, aServiceOrPort, &localAddressSize,
+										  reinterpret_cast<sockaddr*>(&localAddress), &remoteAddressSize,
+										  reinterpret_cast<sockaddr*>(&remoteAddress), &timeout, NULL);
+
+		if (!result)
+		{
+			mySocket.reset();
+			return;
+		}
+
+		u_long mode = 1;
+		::ioctlsocket(mySocket->myValue, FIONBIO, &mode);
+	}
+
 	bool TCPSocket::Update()
 	{
 		if (!mySocket)
@@ -158,35 +190,6 @@ namespace fisk::tools
 		}
 
 		return true;
-	}
-
-	TCPSocket ConnectToTCPByName(const char* aName, const char* aServiceOrPort, std::chrono::microseconds aTimeout)
-	{
-		std::shared_ptr<Socket> sock = std::make_shared<Socket>();
-		sock->myValue				 = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
-		sockaddr_in6 localAddress;
-		DWORD localAddressSize = sizeof(localAddress);
-
-		sockaddr_in6 remoteAddress;
-		DWORD remoteAddressSize = sizeof(remoteAddress);
-
-		
-		std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(aTimeout);
-		std::chrono::microseconds micros = aTimeout - std::chrono::duration_cast<std::chrono::microseconds>(seconds);
-
-		timeval timeout;
-		timeout.tv_sec = seconds.count();
-		timeout.tv_usec = micros.count();
-
-		BOOL result = ::WSAConnectByNameA(sock->myValue, aName, aServiceOrPort, &localAddressSize,
-										  reinterpret_cast<sockaddr*>(&localAddress), &remoteAddressSize,
-										  reinterpret_cast<sockaddr*>(&remoteAddress), &timeout, NULL);
-
-		if (result == FALSE)
-			return TCPSocket(nullptr);
-
-		return TCPSocket(sock);
 	}
 
 } // namespace fisk::tools

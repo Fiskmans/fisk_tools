@@ -13,6 +13,9 @@ namespace fisk::tools
 	{
 	public:
 		TCPSocket(std::shared_ptr<Socket> aSocket);
+		TCPSocket(const char* aName, const char* aServiceOrPort, std::chrono::microseconds aTimeout);
+		TCPSocket(const TCPSocket&) = delete;
+		void operator=(const TCPSocket&) = delete;
 
 		bool Update();
 		void Close();
@@ -35,9 +38,6 @@ namespace fisk::tools
 
 		std::shared_ptr<Socket> mySocket;
 	};
-
-
-	TCPSocket ConnectToTCPByName(const char* aName, const char* aServiceOrPort, std::chrono::microseconds aTimeout);
 
 
 	inline WriteStream& TCPSocket::GetWriteStream()

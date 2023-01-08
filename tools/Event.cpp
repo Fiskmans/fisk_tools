@@ -4,6 +4,8 @@ namespace fisk::tools
 {
 	EventRegistration::~EventRegistration()
 	{
-		myDeregistraion();
+		if (myDeregistraion)
+			myDeregistraion();
 	}
-}
+
+} // namespace fisk::tools

@@ -17,8 +17,7 @@ TEST_CASE("Listen socket", "[Network]")
 
 	using namespace std::chrono_literals;
 
-	fisk::tools::TCPSocket clientSocket =
-		fisk::tools::ConnectToTCPByName("localhost", std::to_string(listenSocket.GetPort()).c_str(), 500ms);
+	fisk::tools::TCPSocket clientSocket("localhost", std::to_string(listenSocket.GetPort()).c_str(), 500ms);
 
 	{
 		fisk::tools::EggClock timer(500ms);
