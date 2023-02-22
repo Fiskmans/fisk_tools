@@ -6,7 +6,7 @@
 namespace fisk::tools
 {
 
-	std::string ReadWholeFile(std::string aFilePath)
+	std::string ReadWholeFile(std::filesystem::path aFilePath)
 	{
 		std::vector<char> buffer;
 
