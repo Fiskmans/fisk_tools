@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <functional>
+#include <memeory>
 #include <unordered_map>
 
 #include "tools/Logger.h"
