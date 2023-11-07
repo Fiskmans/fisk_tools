@@ -1,5 +1,7 @@
 #include "tools/StreamWriter.h"
 
+#include <bit>
+
 namespace fisk::tools
 {
 	StreamWriter::StreamWriter(WriteStream& aStream)
