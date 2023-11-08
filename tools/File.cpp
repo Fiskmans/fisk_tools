@@ -5,12 +5,15 @@
 
 namespace fisk::tools
 {
-
-	std::string ReadWholeFile(std::filesystem::path aFilePath)
+	std::optional<std::string> ReadWholeFile(std::filesystem::path aFilePath)
 	{
 		std::vector<char> buffer;
 
 		std::ifstream file(aFilePath, std::ios::ate | std::ios::binary);
+
+		if (!file)
+			return {};
+
 		size_t size = file.tellg();
 		file.seekg(0, file.beg);
 		

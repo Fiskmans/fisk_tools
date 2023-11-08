@@ -2,11 +2,12 @@
 #define FISK_TOOLS_FILE_H
 
 #include <filesystem>
+#include <optional>
 #include <string>
 
 namespace fisk::tools
 {
-	std::string ReadWholeFile(std::filesystem::path aFilePath);
+	std::optional<std::string> ReadWholeFile(std::filesystem::path aFilePath);
 }
 
 #endif
