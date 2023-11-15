@@ -1,6 +1,7 @@
 list(APPEND files "Container.cpp")
 list(APPEND files "Data.cpp")
 list(APPEND files "Network.cpp")
+list(APPEND files "Events.cpp")
 
 add_executable(fisk_tools_test ${files})
 
