@@ -227,7 +227,7 @@ namespace fisk::tools
 	{
 		for (Registration reg : myCallbacks)
 		{
-			std::optional<ReturnType> res = reg.myCallback(std::forward(aArgs)...);
+			std::optional<ReturnType> res = reg.myCallback(std::forward<Args>(aArgs)...);
 
 			if (res)
 				return res;
