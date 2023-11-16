@@ -21,6 +21,7 @@ list(APPEND files "Json.h" "Json.cpp")
 list(APPEND files "File.h" "File.cpp")
 list(APPEND files "Utility.h")
 list(APPEND files "MathVector.h")
+list(APPEND files "Matrix.h")
 
 add_library(fisk_tools ${files})
 

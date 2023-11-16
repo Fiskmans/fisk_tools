@@ -12,9 +12,6 @@ namespace fisk::tools
 	template<typename Type, class DimensionSequence> 
 	class MathVector_impl;
 
-	template<typename Type, size_t DimensionIndex>
-	using ExtractType = Type;
-
 	template<class Type, std::size_t... DimensionIndexes>
 	class MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>
 	{
@@ -22,7 +19,7 @@ namespace fisk::tools
 		static_assert(sizeof...(DimensionIndexes) > 1, "Thats just a scalar");
 
 		MathVector_impl();
-		MathVector_impl(const ExtractType<Type, DimensionIndexes>... aValues);
+		MathVector_impl(const ExtractTypeFromUnpackedNumber<Type, DimensionIndexes>... aValues);
 		MathVector_impl(const MathVector_impl& aVector) = default;
 
 		template<std::size_t... OtherDimensionIndexes>
@@ -106,7 +103,7 @@ namespace fisk::tools
 	}
 		
 	template<class Type, std::size_t... DimensionIndexes>
-	inline MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::MathVector_impl(const ExtractType<Type, DimensionIndexes> ...aValues)
+	inline MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::MathVector_impl(const ExtractTypeFromUnpackedNumber<Type, DimensionIndexes> ...aValues)
 	{
 		size_t index = 0;
 		int _[]{ 0, (static_cast<void>(myValues[index++] = aValues), 0)... };

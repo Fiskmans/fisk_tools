@@ -20,6 +20,9 @@ namespace fisk::tools
 	{
 		return aValue * aValue;
 	}
+
+	template <typename Type, size_t Number>
+	using ExtractTypeFromUnpackedNumber = Type;
 }
 
 #endif
