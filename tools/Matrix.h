@@ -132,6 +132,12 @@ namespace fisk::tools
 	template <typename Type, size_t Columns, size_t Rows>
 	using Matrix = Matrix_impl<Type, Columns, std::make_index_sequence<Rows * Columns>>;
 
+	using M33F = Matrix<float,3,3>;
+	using M33I = Matrix<int,3,3>;
+	using M44F = Matrix<float,4,4>;
+	using M44I = Matrix<int,4,4>;
+
+
 } // namespace fisk::tools
 
 #endif
