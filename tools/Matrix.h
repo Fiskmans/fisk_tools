@@ -7,6 +7,7 @@
 
 #include <array>
 #include <functional>
+#include <cassert>
 
 namespace fisk::tools
 {
