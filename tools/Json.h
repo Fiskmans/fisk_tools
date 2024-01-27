@@ -118,6 +118,7 @@ namespace fisk::tools
 		bool GetIf(long& aValue) const;
 		bool GetIf(size_t& aValue) const;
 		bool GetIf(int& aValue) const;
+		bool GetIf(uint8_t& aValue) const;
 		bool GetIf(double& aValue) const;
 		bool GetIf(float& aValue) const;
 		bool GetIf(std::string& aValue) const;

@@ -346,6 +346,15 @@ namespace fisk::tools
 		return true;
 	}
 
+	bool tools::Json::GetIf(uint8_t& aValue) const
+	{
+		if (!std::holds_alternative<NumberType>(myValue))
+			return false;
+
+		aValue = static_cast<uint8_t>(std::get<NumberType>(myValue));
+		return true;
+	}
+
 	bool Json::GetIf(double& aValue) const
 	{
 		if (!std::holds_alternative<NumberType>(myValue))
