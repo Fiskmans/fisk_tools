@@ -9,6 +9,7 @@
 #include <cassert>
 
 #include <sys/socket.h>
+#include <netinet/in.h>
 
 namespace fisk::tools
 {
@@ -16,7 +17,7 @@ namespace fisk::tools
 	{
 		mySocket.myValue = ::socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
 
-		if (mySocket.myValue == INVALID_SOCKET)
+		if (mySocket.myValue == -1)
 		{
 			LOG_SYS_ERROR("Failed to create tcp listen socket", 
 				"Port: " + std::to_string(aPort), 
