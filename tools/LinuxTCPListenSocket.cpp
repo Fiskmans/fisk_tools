@@ -25,7 +25,7 @@ namespace fisk::tools
 			return;
 		}
 
-		DWORD ipv6Only = FALSE;
+		int ipv6Only = 0;
 
 		int dualStackResult = ::setsockopt(mySocket.myValue, IPPROTO_IPV6, IPV6_V6ONLY,
 										   reinterpret_cast<const char*>(&ipv6Only), sizeof(ipv6Only));
