@@ -37,7 +37,7 @@ namespace fisk::tools
 		myEnd		  = myBegin + aPoolSize;
 		myAllowExcess = aAllowExcess;
 
-		for (T& item : IteratePointers(myBegin, myEnd))
+		for (T& item : RangeFromStartEnd(myBegin, myEnd))
 			myAvailable.push(&item);
 	}
 
