@@ -30,9 +30,11 @@ namespace fisk::tools
 
 		NetHandle myHandle = Net::GetInstance().Use();
 
-		#if FISK_PLATFORM_WINDOWS
+#if FISK_PLATFORM_WINDOWS
 		SOCKET myValue = INVALID_SOCKET;
-		#endif
+#else
+		int myValue = -1;
+#endif
 	};
 }
 
