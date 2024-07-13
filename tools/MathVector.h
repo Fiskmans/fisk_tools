@@ -1,7 +1,7 @@
 #ifndef TOOLS_MATHVECTOR_H
 #define TOOLS_MATHVECTOR_H
 
-#include <math.h>
+#include <cmath>
 #include <utility>
 #include <concepts>
 
@@ -59,6 +59,8 @@ namespace fisk::tools
 
 		MathVector_impl operator-() const;
 
+		void Reverse();
+
 		Type Length() const;
 		Type LengthSqr() const;
 		Type Distance(const MathVector_impl& aVector) const;
@@ -71,10 +73,10 @@ namespace fisk::tools
 
 		Type Dot(const MathVector_impl& aRHS) const;
 
-		void ReflectPreNormalized(const MathVector_impl& aNormal);
+		void ReflectOnPreNormalized(const MathVector_impl& aNormal);
 		MathVector_impl ReflectedPreNormalized(const MathVector_impl& aNormal) const;
 
-		void Reflect(const MathVector_impl& aNormal);
+		void ReflectOn(const MathVector_impl& aNormal);
 		MathVector_impl Reflected(const MathVector_impl& aNormal) const;
 
 
@@ -261,10 +263,17 @@ namespace fisk::tools
 		return MathVector_impl((-myValues[DimensionIndexes])...);
 	}
 
+	template<class Type, std::size_t ...DimensionIndexes>
+	inline void MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::Reverse()
+	{
+		for (Type& val : myValues)
+			val = -val;
+	}
+
 	template<class Type, std::size_t... DimensionIndexes>
 	inline Type MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::Length() const
 	{
-		return sqrt(LengthSqr());
+		return std::sqrt(LengthSqr());
 	}
 	
 	template<class Type, std::size_t... DimensionIndexes>
@@ -325,7 +334,7 @@ namespace fisk::tools
 	}
 
 	template<class Type, std::size_t... DimensionIndexes>
-	inline void MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::ReflectPreNormalized(const MathVector_impl& aNormal)
+	inline void MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::ReflectOnPreNormalized(const MathVector_impl& aNormal)
 	{
 		MathVector_impl reflectPoint = aNormal * Dot(aNormal);
 
@@ -338,14 +347,14 @@ namespace fisk::tools
 	inline MathVector_impl<Type, std::index_sequence<DimensionIndexes...>> MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::ReflectedPreNormalized(const MathVector_impl& aNormal) const
 	{
 		MathVector_impl copy(*this);
-		copy.ReflectPreNormalized(aNormal);
+		copy.ReflectOnPreNormalized(aNormal);
 		return copy;
 	}
 
 	template<class Type, std::size_t... DimensionIndexes>
-	inline void MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::Reflect(const MathVector_impl& aNormal)
+	inline void MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::ReflectOn(const MathVector_impl& aNormal)
 	{
-		ReflectPreNormalized(aNormal.GetNormalized());
+		ReflectOnPreNormalized(aNormal.GetNormalized());
 	}
 
 	template<class Type, std::size_t... DimensionIndexes>

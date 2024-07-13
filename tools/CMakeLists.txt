@@ -22,6 +22,7 @@ list(APPEND files "File.h" "File.cpp")
 list(APPEND files "Utility.h")
 list(APPEND files "MathVector.h")
 list(APPEND files "Matrix.h")
+list(APPEND files "Shapes.h")
 
 add_library(fisk_tools ${files})
 
