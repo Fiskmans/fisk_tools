@@ -2,6 +2,8 @@
 
 #include <bit>
 
+#include <cstring>
+
 namespace fisk::tools
 {
 	bool StreamReader::ReadRawNumeric(uint8_t* aData, uint32_t aSize)
