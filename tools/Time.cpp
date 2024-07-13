@@ -3,7 +3,6 @@
 
 #include <cassert>
 #include <stack>
-#include <vector>
 
 namespace fisk::tools
 {
