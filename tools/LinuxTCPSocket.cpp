@@ -8,7 +8,7 @@
 #include "tools/TCPSocket.h"
 
 #include <sys/ioctl.h>
-#include <sys/socket>
+#include <sys/socket.h>
 #include <netinet/in.h>
 
 
