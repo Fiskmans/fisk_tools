@@ -8,6 +8,9 @@
 #include "tools/TCPSocket.h"
 
 #include <sys/ioctl.h>
+#include <sys/socket>
+#include <netinet/in.h>
+
 
 namespace fisk::tools
 {
@@ -62,7 +65,8 @@ namespace fisk::tools
 			assert(false);
 
 		u_long mode = 1;
-		::ioctlsocket(mySocket->myValue, FIONBIO, &mode);
+		if (::ioctl(mySocket->myValue, FIONBIO, &mode) != 0)
+			assert(false);
 	}
 
 	bool TCPSocket::Update()
@@ -100,33 +104,32 @@ namespace fisk::tools
 
 			if (amount == SOCKET_ERROR)
 			{
-				int err = ::WSAGetLastError();
+				int err = errno;
 				switch (err)
 				{
-				case WSANOTINITIALISED:
-				case WSAEACCES:
-				case WSAEFAULT:
-				case WSAENOTCONN:
-				case WSAENOTSOCK:
-				case WSAEOPNOTSUPP:
-				case WSAESHUTDOWN:
-				case WSAEMSGSIZE:
-				case WSAEINVAL:
+				case EBADF:
+				case EACCES:
+				case EDESTADDRREQ:
+				case EFAULT:
+				case EISCONN:
+				case EMSGSIZE:
+				case ENOTCONN:
+				case EINVAL:
+				case ENOTSOCK:
+				case EOPNOTSUPP:
 					assert(false);
 					return false;
 
-				case WSAENETDOWN:
-				case WSAENETRESET:
-				case WSAEHOSTUNREACH:
-				case WSAECONNABORTED:
-				case WSAECONNRESET:
-				case WSAETIMEDOUT:
+				case EALREADY:
+				case ENOBUFS:
+				case ENOMEM:
+				case EMSGSIZE:
+				case ECONNRESET:
+				case EPIPE:
 					return false;
 
-				case WSAEWOULDBLOCK:
-				case WSAENOBUFS:
-				case WSAEINTR:
-				case WSAEINPROGRESS:
+				case EAGAIN:
+				case EINTR:
 					return true;
 				}
 			}
@@ -161,30 +164,22 @@ namespace fisk::tools
 
 			if (amount == SOCKET_ERROR)
 			{
-				int err = ::WSAGetLastError();
+				int err = ::errno;
 				switch (err)
 				{
-				case WSANOTINITIALISED:
-				case WSAEFAULT:
-				case WSAENOTCONN:
-				case WSAENOTSOCK:
-				case WSAEOPNOTSUPP:
-				case WSAESHUTDOWN:
-				case WSAEMSGSIZE:
-				case WSAEINVAL:
+				case EBADF:
+				case EFAULT:
+				case EINVAL:
+				case ENOTCONN:
+				case ENOTSOCK:
 					assert(false);
 					return false;
 
-				case WSAENETDOWN:
-				case WSAENETRESET:
-				case WSAECONNABORTED:
-				case WSAETIMEDOUT:
-				case WSAECONNRESET:
+				case ENOMEM:
 					return false;
 
-				case WSAEINTR:
-				case WSAEINPROGRESS:
-				case WSAEWOULDBLOCK:
+				case EAGAIN:
+				case EINTR:
 					if (readData)
 						OnDataAvailable.Fire();
 
