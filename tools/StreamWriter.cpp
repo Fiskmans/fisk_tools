@@ -2,6 +2,8 @@
 
 #include <bit>
 
+#include <cstring>
+
 namespace fisk::tools
 {
 	StreamWriter::StreamWriter(WriteStream& aStream)
