@@ -38,7 +38,7 @@ namespace fisk::tools
 		hints.ai_socktype	= SOCK_STREAM;
 		hints.ai_protocol	= IPPROTO_TCP;
 
-		if (::getaddrinfo(aName, aServiceOrPort, &hints, addresses) != 0)
+		if (::getaddrinfo(aName, aServiceOrPort, &hints, &addresses) != 0)
 			assert(false);
 
 		addrinfo* at = addresses;
@@ -104,7 +104,7 @@ namespace fisk::tools
 								reinterpret_cast<const char*>(myWriteQueue.mySegment->myData + myWriteQueue.myOffset),
 								myWriteQueue.mySegment->mySize - myWriteQueue.myOffset, 0);
 
-			if (amount == SOCKET_ERROR)
+			if (amount == -1)
 			{
 				int err = errno;
 				switch (err)
@@ -164,7 +164,7 @@ namespace fisk::tools
 			if (amount == 0)
 				return false;
 
-			if (amount == SOCKET_ERROR)
+			if (amount == -1)
 			{
 				int err = ::errno;
 				switch (err)
