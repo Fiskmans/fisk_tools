@@ -61,6 +61,10 @@ namespace fisk::tools
 		{
 			return myBase[myAt];
 		}
+		Type* operator->()
+		{
+			return myBase + myAt;
+		}
 
 	private:
 
