@@ -17,6 +17,8 @@
 
 #endif
 
+#include <cstdio>
+
 namespace fisk::tools
 {
     LoggerType Filter  = Type::All;
@@ -42,6 +44,11 @@ namespace fisk::tools
     ITaskbarList3* pTaskbar = nullptr;
     HICON errorIcon;
     HICON warningIcon;
+#else
+    constexpr FOREGROUND_RED    = 0b0001;
+    constexpr FOREGROUND_GREEN  = 0b0010;
+    constexpr FOREGROUND_BLUE   = 0b0100;
+
 #endif
 
     const char DefaultConsoleColor = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
@@ -159,7 +166,11 @@ namespace fisk::tools
             if (ColorMapping.count(aType) != 0)
             {
                 color = ColorMapping[aType];
+#if WIN32
                 SetConsoleTextAttribute(consoleHandle, color);
+#else
+                ::printf("\033[38;5;%u;", color);
+#endif
                 reset = true;
             }
 
@@ -175,14 +186,22 @@ namespace fisk::tools
         }
 
         if (reset)
-        {
+		{
+#if WIN32
             SetConsoleTextAttribute(consoleHandle, DefaultConsoleColor);
+#else
+            ::puts("\033[0");
+#endif
         }
 
         if ((aType & Halting) != 0)
         {
+#if WIN32
             SetActiveWindow(GetConsoleWindow());
             MessageBoxA(NULL, aMessage.c_str(), "A halting error occurred", MB_OK);
+#else
+            ::raise(SIGTRAP)
+#endif
         }
     }
 
