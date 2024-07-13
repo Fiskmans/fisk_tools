@@ -10,6 +10,7 @@
 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <sys/ioctl.h>
 
 namespace fisk::tools
 {
