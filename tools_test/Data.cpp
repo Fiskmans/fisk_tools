@@ -52,7 +52,7 @@ TEST_CASE("WriteStream", "[Data]")
 		size_t left = fisk::tools::StreamSegment::CHUNK_SIZE;
 		while (left > 0)
 		{
-			size_t chunk = std::min(left, 8ull);
+			size_t chunk = std::min(left, size_t(8));
 
 			const uint8_t data[8]{1, 2, 3, 4, 5, 6, 7, 8};
 
