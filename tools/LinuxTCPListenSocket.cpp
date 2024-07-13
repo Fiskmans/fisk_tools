@@ -37,7 +37,7 @@ namespace fisk::tools
 		}
 
 		u_long mode = 1;
-		int nonBlockingResult = ::ioctlsocket(mySocket.myValue, FIONBIO, &mode);
+		int nonBlockingResult = ::ioctl(mySocket.myValue, FIONBIO, &mode);
 
 		if (nonBlockingResult != 0)
 		{
