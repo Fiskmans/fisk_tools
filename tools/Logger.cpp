@@ -18,6 +18,9 @@
 #endif
 
 #include <cstdio>
+#include <cstring>
+#include <time.h>
+#include <csignal>
 
 namespace fisk::tools
 {
@@ -45,9 +48,9 @@ namespace fisk::tools
     HICON errorIcon;
     HICON warningIcon;
 #else
-    constexpr FOREGROUND_RED    = 0b0001;
-    constexpr FOREGROUND_GREEN  = 0b0010;
-    constexpr FOREGROUND_BLUE   = 0b0100;
+    constexpr char FOREGROUND_RED    = 0b0001;
+    constexpr char FOREGROUND_GREEN  = 0b0010;
+    constexpr char FOREGROUND_BLUE   = 0b0100;
 
 #endif
 
@@ -125,6 +128,8 @@ namespace fisk::tools
     void Log(LoggerType aType, const std::string& aMessage)
     {
         std::lock_guard lock(ourMutex);
+
+#if WIN32
         static HANDLE consoleHandle;
         static bool first = true;
         if (first)
@@ -144,7 +149,9 @@ namespace fisk::tools
             {
                 pTaskbar->SetOverlayIcon(window, warningIcon, L"Warning");
             }
-        }
+		}
+#endif
+
         char color = DefaultConsoleColor;
         bool reset = false;
         if ((aType != 0) && ((aType & (aType - 1)) == 0)) // is power of 2
@@ -200,7 +207,7 @@ namespace fisk::tools
             SetActiveWindow(GetConsoleWindow());
             MessageBoxA(NULL, aMessage.c_str(), "A halting error occurred", MB_OK);
 #else
-            ::raise(SIGTRAP)
+            std::signal(SIGINT, SIG_DFL);
 #endif
         }
     }
