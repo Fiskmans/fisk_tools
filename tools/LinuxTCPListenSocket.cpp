@@ -7,6 +7,7 @@
 #include "tools/TCPListenSocket.h"
 
 #include <cassert>
+#include <cstring>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
