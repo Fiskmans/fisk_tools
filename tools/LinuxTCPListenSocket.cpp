@@ -69,7 +69,7 @@ namespace fisk::tools
 			sockaddr_in6 addr;
 			memset(&addr, 0, sizeof(addr));
 
-			int len = sizeof(addr);
+			socklen_t len = sizeof(addr);
 			int sockNameResult = ::getsockname(mySocket.myValue, reinterpret_cast<sockaddr*>(&addr), &len);
 			if (sockNameResult == 0)
 			{
@@ -112,7 +112,7 @@ namespace fisk::tools
 	{
 		while (true)
 		{
-			SOCKET next = ::accept(mySocket.myValue, nullptr, nullptr);
+			int next = ::accept(mySocket.myValue, nullptr, nullptr);
 
 			if (next == -1)
 			{
