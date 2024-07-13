@@ -3,9 +3,9 @@
 
 #include "tools/PlatformDetection.h"
 
-#if FISK_PLATFORM_WINDOWS
-
 #include "tools/Net.h"
+
+#if FISK_PLATFORM_WINDOWS
 
 #define NOMINMAX
 #include <WinSock2.h>
