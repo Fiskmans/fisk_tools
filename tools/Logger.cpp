@@ -158,15 +158,8 @@ namespace fisk::tools
         {
             if (FileMapping.count(aType) != 0)
             {
-                char buffer[256];
-                memset(buffer, '\0', 256);
                 std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-                ctime_s(buffer, 256, &time);
-                if (*buffer != '\0')
-                {
-                    buffer[strlen(buffer) - 1] = '\0';
-                }
-                OpenFiles[FileMapping[aType]] << "[" << buffer << "] [" << GetSeverity(aType) << "] " << aMessage
+                OpenFiles[FileMapping[aType]] << "[" << std::ctime(&time) << "] [" << GetSeverity(aType) << "] " << aMessage
                                               << std::endl;
             }
 
