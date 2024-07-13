@@ -127,7 +127,7 @@ namespace fisk::tools
 					assert(false);
 					return false;
 
-				case WSAECONNRESET:
+				case ECONNRESET:
 				case EINTR:
 				case ENOMEM:
 				case EPERM:
