@@ -125,7 +125,6 @@ namespace fisk::tools
 				case EALREADY:
 				case ENOBUFS:
 				case ENOMEM:
-				case EMSGSIZE:
 				case ECONNRESET:
 				case EPIPE:
 					return false;
