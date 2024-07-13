@@ -29,6 +29,46 @@ namespace fisk::tools
 		T myBegin;
 		T myEnd;
 	};
+
+
+	template<class Type>
+	class LoopingPointer
+	{
+	public:
+		LoopingPointer(Type* aBase, size_t aSize)
+			: myBase(aBase)
+			, mySize(aSize)
+			, myAt(0)
+		{
+
+		}
+
+		void operator++()
+		{
+			++myAt %= mySize;
+		}
+		void operator++(int)
+		{
+			++myAt %= mySize;
+		}
+
+		bool operator==(const LoopingPointer& aOther)
+		{
+			return myAt == aOther.myAt;
+		}
+
+		Type& operator*()
+		{
+			return myBase[myAt];
+		}
+
+	private:
+
+		Type* myBase;
+		size_t mySize;
+		size_t myAt;
+	};
+
 } // namespace fisk::tools
 
 #endif

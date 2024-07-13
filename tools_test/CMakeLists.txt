@@ -3,6 +3,7 @@ list(APPEND files "Data.cpp")
 list(APPEND files "Network.cpp")
 list(APPEND files "Events.cpp")
 list(APPEND files "Math.cpp")
+list(APPEND files "Iterators.cpp")
 
 add_executable(fisk_tools_test ${files})
 
