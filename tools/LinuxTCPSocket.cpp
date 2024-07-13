@@ -165,7 +165,7 @@ namespace fisk::tools
 
 			if (amount == -1)
 			{
-				int err = ::errno;
+				int err = errno;
 				switch (err)
 				{
 				case EBADF:
