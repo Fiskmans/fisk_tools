@@ -4,6 +4,7 @@
 #include "tools/Singleton.h"
 
 #include <limits>
+#include <cstddef>
 
 namespace fisk::tools
 {
