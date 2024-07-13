@@ -8,6 +8,8 @@
 #include <sstream>
 #include <stack>
 
+#include <cstring>
+
 namespace fisk::tools
 {
 	namespace json_help
