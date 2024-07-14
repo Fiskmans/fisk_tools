@@ -36,6 +36,16 @@ namespace fisk::tools
 	};
 
 	template<typename T>
+	struct Tri
+	{
+		MathVector<T, 3> myOrigin;
+		MathVector<T, 3> mySideA;
+		MathVector<T, 3> mySideB;
+
+		static Tri FromCorners(MathVector<T, 3> aA, MathVector<T, 3> aB, MathVector<T, 3> aC);
+	};
+
+	template<typename T>
 	using Line = Planar<T, 2>;
 
 	template<typename T>
@@ -92,6 +102,40 @@ namespace fisk::tools
 		return distance;
 	}
 
+	template<typename T>
+	std::optional<float> Intersect(Ray<T, 3> aRay, Tri<T> aTri)
+	{	
+		MathVector<T, 3> rayXEdgeB = aRay.myDirection.Cross(aTri.mySideB);
+
+		T det = aTri.mySideA.Dot(rayXEdgeB);
+
+		constexpr T eps = 0.00001;
+
+		if (det > -eps && det < eps)
+			return {};
+
+		T inverseDet = 1.0 / det;
+		MathVector<T, 3> delta = aRay.myOrigin - aTri.myOrigin;
+
+		T u = inverseDet * delta.Dot(aRay.myDirection);
+
+		if (u < 0 || u > 1)
+			return {};
+
+		MathVector<T, 3> deltaXEdgeA = delta.Cross(aTri.mySideA);
+		T v = inverseDet * aRay.myDirection.Dot(deltaXEdgeA);
+
+		if (v < 0 || u + v > 1)
+			return {};
+
+		T t = inverseDet * aTri.mySideB.Dot(deltaXEdgeA);
+
+		if (t < eps)
+			return {};
+
+		return t;
+	}
+
 	template<typename T, size_t Dimensions>
 	inline Planar<T, Dimensions> Planar<T, Dimensions>::FromPointandNormal(MathVector<T, Dimensions> aPoint, MathVector<T, Dimensions> aNormal)
 	{
@@ -119,6 +163,18 @@ namespace fisk::tools
 	inline MathVector<T, Dimensions> Ray<T, Dimensions>::PointAt(T aDistance)
 	{
 		return myOrigin + myDirection * aDistance;
+	}
+
+	template<typename T>
+	inline Tri<T> Tri<T>::FromCorners(MathVector<T, 3> aA, MathVector<T, 3> aB, MathVector<T, 3> aC)
+	{
+		Tri out;
+
+		out.myOrigin = aA;
+		out.mySideA = aB - aA;
+		out.mySideB = aC - aA;
+
+		return out;
 	}
 }
 
