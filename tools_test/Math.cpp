@@ -20,6 +20,22 @@ TEST_CASE("Vector", "[Math]")
 
 		REQUIRE(a.Dot(b) == (1 * 5 + 2 * 7 + 3 * 11));
 	}
+
+	{
+		fisk::tools::MathVector<int, 3> a(1, 2, 3);
+		fisk::tools::MathVector<int, 3> b(3, 2, 1);
+
+		fisk::tools::MathVector<int, 3> c = a.Max(b);
+		fisk::tools::MathVector<int, 3> d = a.Min(b);
+
+		REQUIRE(c[0] == 3);
+		REQUIRE(c[1] == 2);
+		REQUIRE(c[2] == 3);
+
+		REQUIRE(d[0] == 1);
+		REQUIRE(d[1] == 2);
+		REQUIRE(d[2] == 1);
+	}
 }
 
 TEST_CASE("Matrix", "[Math]")

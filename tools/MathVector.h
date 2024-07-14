@@ -72,6 +72,11 @@ namespace fisk::tools
 		typename std::enable_if<Dimensions::size() == 3, MathVector_impl>::type Cross(const MathVector_impl& aOther) const;
 
 		Type Dot(const MathVector_impl& aRHS) const;
+		MathVector_impl Max(const MathVector_impl& aOther) const;
+		MathVector_impl Min(const MathVector_impl& aOther) const;
+
+		Type MaxElement() const;
+		Type MinElement() const;
 
 		void ReflectOnPreNormalized(const MathVector_impl& aNormal);
 		MathVector_impl ReflectedPreNormalized(const MathVector_impl& aNormal) const;
@@ -331,6 +336,30 @@ namespace fisk::tools
 			sum += this->myValues[i] * aRHS.myValues[i];
 
 		return sum;
+	}
+
+	template<class Type, std::size_t ...DimensionIndexes>
+	inline MathVector_impl<Type, std::index_sequence<DimensionIndexes...>> MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::Max(const MathVector_impl& aOther) const
+	{
+		return MathVector_impl((std::max)(myValues[DimensionIndexes], aOther.myValues[DimensionIndexes])...);
+	}
+
+	template<class Type, std::size_t ...DimensionIndexes>
+	inline MathVector_impl<Type, std::index_sequence<DimensionIndexes...>> MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::Min(const MathVector_impl& aOther) const
+	{
+		return MathVector_impl((std::min)(myValues[DimensionIndexes], aOther.myValues[DimensionIndexes])...);
+	}
+
+	template<class Type, std::size_t ...DimensionIndexes>
+	inline Type MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::MaxElement() const
+	{
+		return *std::max_element(myValues, myValues + sizeof...(DimensionIndexes));
+	}
+
+	template<class Type, std::size_t ...DimensionIndexes>
+	inline Type MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::MinElement() const
+	{
+		return *std::min_element(myValues, myValues + sizeof...(DimensionIndexes));
 	}
 
 	template<class Type, std::size_t... DimensionIndexes>

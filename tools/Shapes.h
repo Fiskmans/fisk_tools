@@ -47,6 +47,15 @@ namespace fisk::tools
 		static Tri FromCorners(MathVector<T, 3> aA, MathVector<T, 3> aB, MathVector<T, 3> aC);
 	};
 
+	template<typename T, size_t Dimensions>
+	struct AxisAlignedBox
+	{
+		MathVector<T, Dimensions> myMin;
+		MathVector<T, Dimensions> myMax;
+
+		void ExpandToInclude(MathVector<T, Dimensions> aPoint);
+	};
+
 	template<typename T>
 	using Line = Planar<T, 2>;
 
@@ -139,6 +148,41 @@ namespace fisk::tools
 	}
 
 	template<typename T, size_t Dimensions>
+	std::optional<float> IntersectRayBoxPredivided(MathVector<T, Dimensions> aOrigin, MathVector<T, Dimensions> aPredividedDir, AxisAlignedBox<T, Dimensions> aBox)
+	{
+		MathVector<T, Dimensions> minIntersections = aPredividedDir * (aBox.myMin - aOrigin);
+		MathVector<T, Dimensions> maxIntersections = aPredividedDir * (aBox.myMax - aOrigin);
+
+		MathVector<T, Dimensions> minHits = minIntersections.Min(maxIntersections);
+		MathVector<T, Dimensions> maxHits = minIntersections.Max(maxIntersections);
+
+		T tMin = minHits.MaxElement();
+		T tMax = maxHits.MinElement();
+
+		if (tMax < 0)
+			return {};
+
+		if (tMin > tMax)
+			return {};
+
+		return tMin;
+	}
+
+	template<typename T>
+	std::optional<float> Intersect(Ray<T, 3> aRay, AxisAlignedBox<T, 3> aBox)
+	{
+		MathVector<T, 3> dividedDir
+		{
+			1.0 / aRay.myDirection[0],
+			1.0 / aRay.myDirection[1],
+			1.0 / aRay.myDirection[2],
+		};
+
+		return IntersectRayBoxPredivided(aRay.myOrigin, dividedDir, aBox);
+	}
+
+
+	template<typename T, size_t Dimensions>
 	inline Planar<T, Dimensions> Planar<T, Dimensions>::FromPointandNormal(MathVector<T, Dimensions> aPoint, MathVector<T, Dimensions> aNormal)
 	{
 		Planar out;
@@ -183,6 +227,13 @@ namespace fisk::tools
 		out.mySideB = aC - aA;
 
 		return out;
+	}
+
+	template<typename T, size_t Dimensions>
+	inline void AxisAlignedBox<T, Dimensions>::ExpandToInclude(MathVector<T, Dimensions> aPoint)
+	{
+		myMax = myMax.Max(aPoint);
+		myMin = myMin.Min(aPoint);
 	}
 }
 
