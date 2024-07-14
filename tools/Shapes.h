@@ -42,6 +42,8 @@ namespace fisk::tools
 		MathVector<T, 3> mySideA;
 		MathVector<T, 3> mySideB;
 
+		MathVector<T, 3> Normal();
+
 		static Tri FromCorners(MathVector<T, 3> aA, MathVector<T, 3> aB, MathVector<T, 3> aC);
 	};
 
@@ -163,6 +165,12 @@ namespace fisk::tools
 	inline MathVector<T, Dimensions> Ray<T, Dimensions>::PointAt(T aDistance)
 	{
 		return myOrigin + myDirection * aDistance;
+	}
+
+	template<typename T>
+	inline MathVector<T, 3> Tri<T>::Normal()
+	{
+		return mySideA.Cross(mySideB).GetNormalized();
 	}
 
 	template<typename T>
