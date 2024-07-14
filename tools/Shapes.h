@@ -119,7 +119,7 @@ namespace fisk::tools
 		T inverseDet = 1.0 / det;
 		MathVector<T, 3> delta = aRay.myOrigin - aTri.myOrigin;
 
-		T u = inverseDet * delta.Dot(aRay.myDirection);
+		T u = inverseDet * delta.Dot(rayXEdgeB);
 
 		if (u < 0 || u > 1)
 			return {};
