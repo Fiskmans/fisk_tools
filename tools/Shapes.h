@@ -42,7 +42,7 @@ namespace fisk::tools
 		MathVector<T, 3> mySideA;
 		MathVector<T, 3> mySideB;
 
-		MathVector<T, 3> Normal();
+		MathVector<T, 3> Normal() const;
 
 		static Tri FromCorners(MathVector<T, 3> aA, MathVector<T, 3> aB, MathVector<T, 3> aC);
 	};
@@ -168,7 +168,7 @@ namespace fisk::tools
 	}
 
 	template<typename T>
-	inline MathVector<T, 3> Tri<T>::Normal()
+	inline MathVector<T, 3> Tri<T>::Normal() const
 	{
 		return mySideA.Cross(mySideB).GetNormalized();
 	}

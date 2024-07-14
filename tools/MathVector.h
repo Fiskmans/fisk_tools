@@ -69,7 +69,7 @@ namespace fisk::tools
 		MathVector_impl GetNormalized() const;
 
 		template<typename Dimensions = std::index_sequence<DimensionIndexes...>>
-		typename std::enable_if<Dimensions::size() == 3, MathVector_impl>::type Cross(const MathVector_impl& aOther);
+		typename std::enable_if<Dimensions::size() == 3, MathVector_impl>::type Cross(const MathVector_impl& aOther) const;
 
 		Type Dot(const MathVector_impl& aRHS) const;
 
@@ -314,7 +314,7 @@ namespace fisk::tools
 	template<class Type, std::size_t ...DimensionIndexes>
 	template<typename Dimensions>
 	inline typename std::enable_if<Dimensions::size() == 3, MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>>::type
-	MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::Cross(const MathVector_impl& aOther)
+	MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::Cross(const MathVector_impl& aOther) const
 	{
 		return MathVector_impl(
 			(myValues[1] * aOther[2]) - (myValues[2] * aOther[1]),
