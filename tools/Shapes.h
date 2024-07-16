@@ -72,7 +72,7 @@ namespace fisk::tools
 	using Sphere = Spheroid<T, 3>;
 
 	template<typename T, size_t Dimensions>
-	std::optional<float> Intersect(Ray<T, Dimensions> aRay, Spheroid<T, Dimensions> aSpheroid)
+	std::optional<T> Intersect(Ray<T, Dimensions> aRay, Spheroid<T, Dimensions> aSpheroid)
 	{
 		if (aRay.myOrigin.DistanceSqr(aSpheroid.myCenter) < aSpheroid.myRadius * aSpheroid.myRadius + 0.0001f)
 			return {};
@@ -96,7 +96,7 @@ namespace fisk::tools
 	}
 
 	template<typename T, size_t Dimensions>
-	std::optional<float> Intersect(Ray<T, Dimensions> aRay, Planar<T, Dimensions> aPlanar)
+	std::optional<T> Intersect(Ray<T, Dimensions> aRay, Planar<T, Dimensions> aPlanar)
 	{
 		T denom = aPlanar.myNormal.Dot(aRay.myDirection);
 
@@ -114,7 +114,7 @@ namespace fisk::tools
 	}
 
 	template<typename T>
-	std::optional<float> Intersect(Ray<T, 3> aRay, Tri<T> aTri)
+	std::optional<T> Intersect(Ray<T, 3> aRay, Tri<T> aTri)
 	{	
 		MathVector<T, 3> rayXEdgeB = aRay.myDirection.Cross(aTri.mySideB);
 
@@ -148,7 +148,7 @@ namespace fisk::tools
 	}
 
 	template<typename T, size_t Dimensions>
-	std::optional<float> IntersectRayBoxPredivided(MathVector<T, Dimensions> aOrigin, MathVector<T, Dimensions> aPredividedDir, AxisAlignedBox<T, Dimensions> aBox)
+	std::optional<T> IntersectRayBoxPredivided(MathVector<T, Dimensions> aOrigin, MathVector<T, Dimensions> aPredividedDir, AxisAlignedBox<T, Dimensions> aBox)
 	{
 		MathVector<T, Dimensions> minIntersections = aPredividedDir * (aBox.myMin - aOrigin);
 		MathVector<T, Dimensions> maxIntersections = aPredividedDir * (aBox.myMax - aOrigin);
@@ -169,13 +169,13 @@ namespace fisk::tools
 	}
 
 	template<typename T>
-	std::optional<float> Intersect(Ray<T, 3> aRay, AxisAlignedBox<T, 3> aBox)
+	std::optional<T> Intersect(Ray<T, 3> aRay, AxisAlignedBox<T, 3> aBox)
 	{
 		MathVector<T, 3> dividedDir
 		{
-			1.0 / aRay.myDirection[0],
-			1.0 / aRay.myDirection[1],
-			1.0 / aRay.myDirection[2],
+			T{ 1.0 } / aRay.myDirection[0],
+			T{ 1.0 } / aRay.myDirection[1],
+			T{ 1.0 } / aRay.myDirection[2],
 		};
 
 		return IntersectRayBoxPredivided(aRay.myOrigin, dividedDir, aBox);
