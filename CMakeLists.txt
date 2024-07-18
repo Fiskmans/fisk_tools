@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(BUILD_SHARED_LIBS OFF)
 
 add_subdirectory(tools)
+add_subdirectory(examples)
 
 Include(CTest)
 Include(FetchContent)
