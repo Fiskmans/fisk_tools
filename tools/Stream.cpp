@@ -22,7 +22,7 @@ namespace fisk::tools
 		return amount;
 	}
 
-	uint8_t StreamSegment::Read(uint8_t* aData, size_t aOffset, size_t aSize)
+	size_t StreamSegment::Read(uint8_t* aData, size_t aOffset, size_t aSize)
 	{
 		size_t amount = std::min(mySize - aOffset, aSize);
 

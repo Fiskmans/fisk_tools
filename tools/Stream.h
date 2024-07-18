@@ -15,7 +15,7 @@ namespace fisk::tools
 		size_t SpaceLeft();
 
 		size_t Write(const uint8_t* aData, size_t aSize);
-		uint8_t Read(uint8_t* aData, size_t aOffset, size_t aSize);
+		size_t Read(uint8_t* aData, size_t aOffset, size_t aSize);
 
 		size_t mySize = 0;
 		std::shared_ptr<StreamSegment> myNext;
