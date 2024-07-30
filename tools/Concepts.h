@@ -1,16 +1,26 @@
 #ifndef FISK_TOOLS_CONCEPTS_H
 #define FISK_TOOLS_CONCEPTS_H
 
-#include "tools/DataProcessor.h"
-
 #include <concepts>
+#include <limits>
 
 namespace fisk::tools
 {
+    class DataProcessor;
+
     template <class Type>
     concept Serializable = requires(Type aItem)
     {
-        {aItem.Process(std::declval<DataProcessor>())};
+        requires std::is_class_v<Type>;
+
+        { aItem.Process(std::declval<DataProcessor&>()) } -> std::convertible_to<bool>;
+    };
+
+
+    template<class T>
+    concept Numeric = requires()
+    {
+        requires std::numeric_limits<T>::is_specialized;
     };
 
 } // namespace fisk::tools

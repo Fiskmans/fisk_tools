@@ -34,6 +34,11 @@ namespace fisk::tools
 	{
 	}
 
+	bool StreamReader::Process(bool& aValue)
+	{
+		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
+	}
+
 	bool StreamReader::Process(uint8_t& aValue)
 	{
 		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
@@ -70,6 +75,16 @@ namespace fisk::tools
 	}
 
 	bool StreamReader::Process(int64_t& aValue)
+	{
+		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
+	}
+
+	bool StreamReader::Process(float& aValue)
+	{
+		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
+	}
+
+	bool StreamReader::Process(double& aValue)
 	{
 		return ReadRawNumeric(reinterpret_cast<uint8_t*>(&aValue), sizeof(aValue));
 	}

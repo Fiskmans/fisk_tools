@@ -11,6 +11,12 @@ namespace fisk::tools
 	{
 	}
 
+	bool StreamWriter::Process(bool& aValue)
+	{
+		WriteRawNumeric(reinterpret_cast<const uint8_t*>(&aValue), sizeof(aValue));
+		return true;
+	}
+
 	bool StreamWriter::Process(uint8_t& aValue)
 	{
 		WriteRawNumeric(reinterpret_cast<const uint8_t*>(&aValue), sizeof(aValue));
@@ -54,6 +60,18 @@ namespace fisk::tools
 	}
 
 	bool StreamWriter::Process(int64_t& aValue)
+	{
+		WriteRawNumeric(reinterpret_cast<const uint8_t*>(&aValue), sizeof(aValue));
+		return true;
+	}
+
+	bool StreamWriter::Process(float& aValue)
+	{
+		WriteRawNumeric(reinterpret_cast<const uint8_t*>(&aValue), sizeof(aValue));
+		return true;
+	}
+
+	bool StreamWriter::Process(double& aValue)
 	{
 		WriteRawNumeric(reinterpret_cast<const uint8_t*>(&aValue), sizeof(aValue));
 		return true;

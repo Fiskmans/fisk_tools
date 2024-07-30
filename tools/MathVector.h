@@ -5,6 +5,7 @@
 #include <utility>
 #include <concepts>
 
+#include "tools/DataProcessor.h"
 #include "tools/Utility.h"
 
 namespace fisk::tools
@@ -84,6 +85,7 @@ namespace fisk::tools
 		void ReflectOn(const MathVector_impl& aNormal);
 		MathVector_impl Reflected(const MathVector_impl& aNormal) const;
 
+		bool Process(DataProcessor& aProcessor);
 
 	private:
 		Type myValues[sizeof...(DimensionIndexes)];
@@ -390,6 +392,18 @@ namespace fisk::tools
 	inline MathVector_impl<Type, std::index_sequence<DimensionIndexes...>> MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::Reflected(const MathVector_impl& aNormal) const
 	{
 		return ReflectedPreNormalized(aNormal.GetNormalized());
+	}
+	template<class Type, std::size_t ...DimensionIndexes>
+	inline bool MathVector_impl<Type, std::index_sequence<DimensionIndexes...>>::Process(DataProcessor& aProcessor)
+	{
+		bool success = true;
+
+		(
+			(success = aProcessor.Process(this->myValues[DimensionIndexes]))
+			, ...
+		);
+
+		return success;
 	}
 }
 

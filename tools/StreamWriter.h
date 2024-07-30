@@ -14,6 +14,8 @@ namespace fisk::tools
 	public:
 		StreamWriter(WriteStream& aStream);
 
+		bool Process(bool& aValue) override;
+
 		bool Process(uint8_t& aValue) override;
 		bool Process(int8_t& aValue) override;
 
@@ -25,6 +27,9 @@ namespace fisk::tools
 
 		bool Process(uint64_t& aValue) override;
 		bool Process(int64_t& aValue) override;
+
+		bool Process(float& aValue) override;
+		bool Process(double& aValue) override;
 
 		bool Process(std::string& aValue) override;
 

@@ -120,12 +120,12 @@ namespace fisk::tools
 
 		T det = aTri.mySideA.Dot(rayXEdgeB);
 
-		constexpr T eps = 0.00001;
+		constexpr T eps = static_cast<T>(0.00001);
 
 		if (det > -eps && det < eps)
 			return {};
 
-		T inverseDet = 1.0 / det;
+		T inverseDet = static_cast<T>(1.0) / det;
 		MathVector<T, 3> delta = aRay.myOrigin - aTri.myOrigin;
 
 		T u = inverseDet * delta.Dot(rayXEdgeB);
