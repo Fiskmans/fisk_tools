@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tools/MathVector.h"
+#include "tools/DataProcessor.h"
 
 #include <optional>
 
@@ -15,6 +16,7 @@ namespace fisk::tools
 		T myDistance;
 
 		static Planar FromPointandNormal(MathVector<T, Dimensions> aPoint, MathVector<T, Dimensions> aNormal);
+		bool Process(DataProcessor& aProcessor);
 	};
 
 	template<typename T, size_t Dimensions>
@@ -22,6 +24,8 @@ namespace fisk::tools
 	{
 		MathVector<T, Dimensions> myCenter;
 		T myRadius;
+
+		bool Process(DataProcessor& aProcessor);
 	};
 
 	template<typename T, size_t Dimensions>
@@ -33,6 +37,7 @@ namespace fisk::tools
 		static Ray FromPointandTarget(MathVector<T, Dimensions> aPoint, MathVector<T, Dimensions> aTarget);
 
 		MathVector<T, Dimensions> PointAt(T aDistance);
+		bool Process(DataProcessor& aProcessor);
 	};
 
 	template<typename T>
@@ -45,6 +50,7 @@ namespace fisk::tools
 		MathVector<T, 3> Normal() const;
 
 		static Tri FromCorners(MathVector<T, 3> aA, MathVector<T, 3> aB, MathVector<T, 3> aC);
+		bool Process(DataProcessor& aProcessor);
 	};
 
 	template<typename T, size_t Dimensions>
@@ -54,6 +60,7 @@ namespace fisk::tools
 		MathVector<T, Dimensions> myMax;
 
 		void ExpandToInclude(MathVector<T, Dimensions> aPoint);
+		bool Process(DataProcessor& aProcessor);
 	};
 
 	template<typename T>
@@ -194,6 +201,13 @@ namespace fisk::tools
 	}
 
 	template<typename T, size_t Dimensions>
+	inline bool Planar<T, Dimensions>::Process(DataProcessor& aProcessor)
+	{
+		return aProcessor.Process(myNormal) 
+			&& aProcessor.Process(myDistance);
+	}
+
+	template<typename T, size_t Dimensions>
 	inline Ray<T, Dimensions> Ray<T, Dimensions>::FromPointandTarget(MathVector<T, Dimensions> aPoint, MathVector<T, Dimensions> aTarget)
 	{
 		Ray out;
@@ -209,6 +223,13 @@ namespace fisk::tools
 	inline MathVector<T, Dimensions> Ray<T, Dimensions>::PointAt(T aDistance)
 	{
 		return myOrigin + myDirection * aDistance;
+	}
+
+	template<typename T, size_t Dimensions>
+	inline bool Ray<T, Dimensions>::Process(DataProcessor& aProcessor)
+	{
+		return aProcessor.Process(myOrigin)
+			&& aProcessor.Process(myDirection);
 	}
 
 	template<typename T>
@@ -229,11 +250,31 @@ namespace fisk::tools
 		return out;
 	}
 
+	template<typename T>
+	inline bool Tri<T>::Process(DataProcessor& aProcessor)
+	{
+		return aProcessor.Process(myOrigin)
+			&& aProcessor.Process(mySideA)
+			&& aProcessor.Process(mySideB);
+	}
+
 	template<typename T, size_t Dimensions>
 	inline void AxisAlignedBox<T, Dimensions>::ExpandToInclude(MathVector<T, Dimensions> aPoint)
 	{
 		myMax = myMax.Max(aPoint);
 		myMin = myMin.Min(aPoint);
+	}
+	template<typename T, size_t Dimensions>
+	inline bool AxisAlignedBox<T, Dimensions>::Process(DataProcessor& aProcessor)
+	{
+		return aProcessor.Process(myMin)
+			&& aProcessor.Process(myMax);
+	}
+	template<typename T, size_t Dimensions>
+	inline bool Spheroid<T, Dimensions>::Process(DataProcessor& aProcessor)
+	{
+		return aProcessor.Process(myCenter)
+			&& aProcessor.Process(myRadius);
 	}
 }
 
