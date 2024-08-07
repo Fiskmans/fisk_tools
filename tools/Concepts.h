@@ -23,6 +23,12 @@ namespace fisk::tools
         requires std::numeric_limits<T>::is_specialized;
     };
 
+    template<class T>
+    concept EnumType = requires()
+    {
+        requires std::is_enum<T>::value;
+    };
+
 } // namespace fisk::tools
 
 #endif

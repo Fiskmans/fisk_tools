@@ -31,6 +31,19 @@ namespace fisk::tools
 
 		bool Process(std::string& aValue) override;
 
+		template<class T>
+		bool ProcessAndCommit(T& aValue)
+		{
+			if (DataProcessor::Process(aValue))
+			{
+				myReadStream.CommitRead();
+				return true;
+			}
+
+			myReadStream.RestoreRead();
+			return false;
+		}
+
 	private:
 
 		bool ReadRawNumeric(uint8_t* aData, uint32_t aSize);

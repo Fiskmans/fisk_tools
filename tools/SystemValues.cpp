@@ -2,18 +2,13 @@
 
 bool fisk::tools::SystemValues::Process(DataProcessor& aProcessor)
 {
-	bool success = true;
-
-	success &= aProcessor.Process(myFloatValues);
-	success &= aProcessor.Process(myDoubleValues);
-	success &= aProcessor.Process(myLongDoubleValues);
-
-	success &= aProcessor.Process(myCharValues);
-	success &= aProcessor.Process(myShortValues);
-	success &= aProcessor.Process(myIntValues);
-	success &= aProcessor.Process(myLongValues);
-	success &= aProcessor.Process(myLongLongValues);
-	success &= aProcessor.Process(mySizeTValues);
-
-	return success;
+	return aProcessor.Process(myFloatValues)
+		&& aProcessor.Process(myDoubleValues)
+		&& aProcessor.Process(myLongDoubleValues)
+		&& aProcessor.Process(myCharValues)
+		&& aProcessor.Process(myShortValues)
+		&& aProcessor.Process(myIntValues)
+		&& aProcessor.Process(myLongValues)
+		&& aProcessor.Process(myLongLongValues)
+		&& aProcessor.Process(mySizeTValues);
 }

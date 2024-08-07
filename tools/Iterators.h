@@ -31,11 +31,11 @@ namespace fisk::tools
 	};
 
 
-	template<class Type>
+	template<class IteratorType>
 	class LoopingPointer
 	{
 	public:
-		LoopingPointer(Type* aBase, size_t aSize)
+		LoopingPointer(IteratorType aBase, size_t aSize)
 			: myBase(aBase)
 			, mySize(aSize)
 			, myAt(0)
@@ -57,18 +57,18 @@ namespace fisk::tools
 			return myAt == aOther.myAt;
 		}
 
-		Type& operator*()
+		auto& operator*()
 		{
-			return myBase[myAt];
+			return *(myBase + myAt);
 		}
-		Type* operator->()
+		auto operator->()
 		{
 			return myBase + myAt;
 		}
 
 	private:
 
-		Type* myBase;
+		IteratorType myBase;
 		size_t mySize;
 		size_t myAt;
 	};

@@ -37,8 +37,8 @@ namespace fisk::tools
 			uint32_t	myDigits10			= std::numeric_limits<T>::digits10;
 			uint32_t	myMaxDigits10		= std::numeric_limits<T>::max_digits10;
 			uint32_t	myRadix				= std::numeric_limits<T>::radix;
-			uint32_t	myMinExponent		= std::numeric_limits<T>::min_exponent;
-			uint32_t	myMinExponent10		= std::numeric_limits<T>::min_exponent10;
+			int32_t		myMinExponent		= std::numeric_limits<T>::min_exponent;
+			int32_t		myMinExponent10		= std::numeric_limits<T>::min_exponent10;
 			uint32_t	myMaxExponent		= std::numeric_limits<T>::max_exponent;
 			uint32_t	myMaxExponent10		= std::numeric_limits<T>::max_exponent10;
 			uint8_t		myTraps				= std::numeric_limits<T>::traps;
@@ -60,29 +60,25 @@ namespace fisk::tools
 	template<Numeric T>
 	inline bool SystemValues::NumericInfo<T>::Process(DataProcessor& aProcessor)
 	{
-		bool success = true;
-
-		success &= aProcessor.Process(mySize);
-		success &= aProcessor.Process(myIsSigned);
-		success &= aProcessor.Process(myHasInfinity);
-		success &= aProcessor.Process(myHasQuietNan);
-		success &= aProcessor.Process(myHasSignalingNan);
-		success &= aProcessor.Process(myHasDenorm);
-		success &= aProcessor.Process(myHasDenormLoss);
-		success &= aProcessor.Process(myRoundStyle);
-		success &= aProcessor.Process(myIsIEC559);
-		success &= aProcessor.Process(myIsModulo);
-		success &= aProcessor.Process(myDigits);
-		success &= aProcessor.Process(myDigits10);
-		success &= aProcessor.Process(myMaxDigits10);
-		success &= aProcessor.Process(myMaxDigits10);
-		success &= aProcessor.Process(myMinExponent);
-		success &= aProcessor.Process(myMinExponent10);
-		success &= aProcessor.Process(myMaxExponent);
-		success &= aProcessor.Process(myMaxExponent10);
-		success &= aProcessor.Process(myTraps);
-		success &= aProcessor.Process(myTinynessBefore);
-
-		return success;
+		return aProcessor.Process(mySize)
+			&& aProcessor.Process(myIsSigned)
+			&& aProcessor.Process(myHasInfinity)
+			&& aProcessor.Process(myHasQuietNan)
+			&& aProcessor.Process(myHasSignalingNan)
+			&& aProcessor.Process(myHasDenorm)
+			&& aProcessor.Process(myHasDenormLoss)
+			&& aProcessor.Process(myRoundStyle)
+			&& aProcessor.Process(myIsIEC559)
+			&& aProcessor.Process(myIsModulo)
+			&& aProcessor.Process(myDigits)
+			&& aProcessor.Process(myDigits10)
+			&& aProcessor.Process(myMaxDigits10)
+			&& aProcessor.Process(myMaxDigits10)
+			&& aProcessor.Process(myMinExponent)
+			&& aProcessor.Process(myMinExponent10)
+			&& aProcessor.Process(myMaxExponent)
+			&& aProcessor.Process(myMaxExponent10)
+			&& aProcessor.Process(myTraps)
+			&& aProcessor.Process(myTinynessBefore);
 	}
 }

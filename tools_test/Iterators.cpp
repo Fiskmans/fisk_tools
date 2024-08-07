@@ -8,7 +8,7 @@ TEST_CASE("Iterators", "[Iterators]")
 	{
 		int arr[] = {1, 2, 3, 4, 5, 6};
 
-		fisk::tools::LoopingPointer<int> limited(arr, 3);
+		fisk::tools::LoopingPointer<int*> limited(arr, 3);
 
 		REQUIRE(*limited == 1);
 		limited++;
@@ -27,7 +27,7 @@ TEST_CASE("Iterators", "[Iterators]")
 	{
 		int arr[] = {1, 2, 3, 4, 5, 6};
 
-		fisk::tools::LoopingPointer<int> limited(arr, 3);
+		fisk::tools::LoopingPointer<int*> limited(arr, 3);
 
 		REQUIRE(*limited == 1);
 		++limited;
@@ -46,7 +46,7 @@ TEST_CASE("Iterators", "[Iterators]")
 	{
 		int arr[] = {1, 2, 3, 4, 5, 6};
 
-		fisk::tools::LoopingPointer<int> limited(arr, 1);
+		fisk::tools::LoopingPointer<int*> limited(arr, 1);
 
 		REQUIRE(*limited == 1);
 		limited++;
@@ -58,7 +58,7 @@ TEST_CASE("Iterators", "[Iterators]")
 
 	{
 		int arr[] = { 1, 2, 3, 4, 5, 6 };
-		fisk::tools::LoopingPointer<int> limited(arr, 6);
+		fisk::tools::LoopingPointer<int*> limited(arr, 6);
 
 		REQUIRE(*limited == 1);
 		limited++;
@@ -88,7 +88,7 @@ TEST_CASE("Iterators", "[Iterators]")
 
 	{
 		int arr[] = { 1, 2, 3, 4, 5, 6 };
-		fisk::tools::LoopingPointer<int> limited(arr, 6);
+		fisk::tools::LoopingPointer<int*> limited(arr, 6);
 
 		REQUIRE(*limited == 1);
 		++limited;
