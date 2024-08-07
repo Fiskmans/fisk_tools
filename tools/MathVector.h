@@ -4,6 +4,7 @@
 #include <cmath>
 #include <utility>
 #include <concepts>
+#include <algorithm>
 
 #include "tools/DataProcessor.h"
 #include "tools/Utility.h"
