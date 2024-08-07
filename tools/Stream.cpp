@@ -1,7 +1,7 @@
 #include "tools/Stream.h"
 
 #include <algorithm>
-
+#include <memory>
 #include <cstring>
 
 namespace fisk::tools
