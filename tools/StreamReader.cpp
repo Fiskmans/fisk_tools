@@ -2,6 +2,7 @@
 
 #include <bit>
 
+#include <algorithm>
 #include <cstring>
 
 namespace fisk::tools

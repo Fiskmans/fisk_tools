@@ -1,5 +1,7 @@
 #include "tools/TCPListenSocket.h"
 #include <iostream>
+#include <cstring>
+#include <charconv>
 
 class PrintingSocket
 {
@@ -51,9 +53,26 @@ void UpdateSockets(std::vector<PrintingSocket*>& aSockets)
 	}
 }
 
-int main()
+int main(int argc, char** argv)
 {
-	fisk::tools::TCPListenSocket listenSocket(12345);
+	short port = 12345;
+
+	if (argc > 1)
+	{
+		const char* start = argv[1];
+		const char* end = start + ::strlen(start);
+
+		std::from_chars_result res = std::from_chars(start, end, port);
+
+		if (res.ptr != end)
+		{
+			std::cout << "failed to parse port: " << argv[1];
+		}
+	}
+
+
+
+	fisk::tools::TCPListenSocket listenSocket(port);
 
 	std::vector<PrintingSocket*> sockets;
 
@@ -65,7 +84,7 @@ int main()
 		});
 
 
-	std::cout << "Listening" << std::endl;
+	std::cout << "Listening on " << port << std::endl;
 
 	while (listenSocket.Update())
 	{
