@@ -32,9 +32,15 @@ namespace fisk::tools
 		bool Process(std::string& aValue) override;
 
 		template<class T>
+		bool Process(T& aValue)
+		{
+			return DataProcessor::Process(aValue);
+		}
+
+		template<class T>
 		bool ProcessAndCommit(T& aValue)
 		{
-			if (DataProcessor::Process(aValue))
+			if (Process(aValue))
 			{
 				myReadStream.CommitRead();
 				return true;

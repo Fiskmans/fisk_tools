@@ -33,6 +33,12 @@ namespace fisk::tools
 
 		bool Process(std::string& aValue) override;
 
+		template<class T>
+		bool Process(T& aValue)
+		{
+			return DataProcessor::Process(aValue);
+		}
+
 	private:
 		void WriteRawNumeric(const uint8_t* aData, uint32_t aSize);
 
