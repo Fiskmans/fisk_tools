@@ -34,7 +34,7 @@ namespace fisk::tools
 
 	SystemValues::Difference::operator bool()
 	{
-		return myMessage.empty() && mySubDifferences.empty();
+		return myMessage.empty() || mySubDifferences.empty();
 	}
 
 	std::string SystemValues::Difference::ToString()
