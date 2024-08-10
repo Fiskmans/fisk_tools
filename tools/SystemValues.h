@@ -156,7 +156,7 @@ namespace fisk::tools
 		subDiff->myTag = aTag;
 		subDiff->myMessage = "[" + aTag + "]";
 
-		aLocal.CheckForDifferences(aOut, aRemote);
+		aLocal.AddDifferences(aOut, aRemote);
 
 		aOut.mySubDifferences.push_back(std::move(subDiff));
 	}
