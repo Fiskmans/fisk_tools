@@ -1,5 +1,7 @@
 #include "SystemValues.h"
 
+#include <sstream>
+
 namespace fisk::tools
 {
 	bool SystemValues::Process(DataProcessor& aProcessor)

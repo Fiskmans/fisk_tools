@@ -1,6 +1,7 @@
 #ifndef FISK_TOOLS_LOGGER_H
 #define FISK_TOOLS_LOGGER_H
 
+#include <climits>
 #include <string>
 #include <vector>
 
