@@ -22,6 +22,8 @@ namespace fisk::tools
 
 			std::string ToString();
 
+			bool Contains(std::string aTag);
+
 			std::string myTag;
 			std::string myMessage;
 			std::vector<std::unique_ptr<Difference>> mySubDifferences;

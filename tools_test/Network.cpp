@@ -6,6 +6,8 @@
 #include "tools/TCPListenSocket.h"
 #include "tools/TCPSocket.h"
 
+#include "tools/SystemValues.h"
+
 TEST_CASE("Listen socket", "[Network]")
 {
 	fisk::tools::TCPListenSocket listenSocket(fisk::tools::TCPListenSocket::AnyPort);
@@ -86,4 +88,34 @@ TEST_CASE("Listen socket", "[Network]")
 		REQUIRE(client);
 		REQUIRE(connected);
 	}
+}
+
+TEST_CASE("SystemValues", "[network]")
+{
+	fisk::tools::SystemValues mockLocal;
+	fisk::tools::SystemValues mockRemote;
+
+	fisk::tools::SystemValues::Difference diff = mockLocal.Differences(mockRemote);
+
+	REQUIRE(!diff);
+	REQUIRE(!diff.Contains("float"));
+	REQUIRE(!diff.Contains("float.digits"));
+	REQUIRE(!diff.Contains("int"));
+	REQUIRE(!diff.Contains("int.digits"));
+
+	{
+		mockLocal.myFloatValues.myDigits = 10;
+	}
+
+	{
+		mockRemote.myFloatValues.myDigits = 100;
+	}
+
+	diff = mockLocal.Differences(mockRemote);
+
+	REQUIRE(diff);
+	REQUIRE(diff.Contains("float"));
+	REQUIRE(diff.Contains("float.digits"));
+	REQUIRE(!diff.Contains("int"));
+	REQUIRE(!diff.Contains("int.digits"));
 }

@@ -34,7 +34,7 @@ namespace fisk::tools
 
 	SystemValues::Difference::operator bool()
 	{
-		return myMessage.empty() || mySubDifferences.empty();
+		return !myMessage.empty() || !mySubDifferences.empty();
 	}
 
 	std::string SystemValues::Difference::ToString()
@@ -48,6 +48,45 @@ namespace fisk::tools
 		}
 
 		return ss.str();
+	}
+
+	bool SystemValues::Difference::Contains(std::string aTag)
+	{
+		std::string::size_type dotPos = aTag.find('.');
+
+		std::string tag;
+		std::string subTags;
+
+		if (dotPos != std::string::npos)
+		{
+			tag = aTag.substr(0, dotPos);
+			subTags = aTag.substr(dotPos + 1);
+		}
+		else
+		{
+			tag = aTag;
+		}
+
+		Difference* diff = nullptr;
+
+		for (std::unique_ptr<Difference>& sub : mySubDifferences)
+		{
+			if (sub->myTag == tag)
+			{
+				diff = sub.get();
+				break;
+			}
+		}
+
+		if (diff)
+		{
+			if (subTags.empty())
+				return true;
+
+			return diff->Contains(subTags);
+		}
+
+		return false;
 	}
 
 }
