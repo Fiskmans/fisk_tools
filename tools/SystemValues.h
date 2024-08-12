@@ -156,7 +156,7 @@ namespace fisk::tools
 		std::unique_ptr<Difference> subDiff = std::make_unique<Difference>();
 
 		subDiff->myTag = aTag;
-		subDiff->myMessage = "[" + aTag + "]";
+
 
 		aLocal.AddDifferences(*subDiff, aRemote);
 

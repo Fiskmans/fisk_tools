@@ -40,11 +40,29 @@ namespace fisk::tools
 	std::string SystemValues::Difference::ToString()
 	{
 		std::stringstream ss;
-		ss << "[" << myTag << "]" << myMessage;
-
-		for (std::unique_ptr<Difference>& sub : mySubDifferences)
+		if (myTag.empty())
 		{
-			ss << "\n  " << sub->ToString();
+			bool first = true;
+			for (std::unique_ptr<Difference>& sub : mySubDifferences)
+			{
+				if (!first)
+				{
+					ss << "\n";
+				}
+
+				first = false;
+
+				ss << sub->ToString();
+			}
+		}
+		else
+		{
+			ss << "[" << myTag << "]" << myMessage;
+
+			for (std::unique_ptr<Difference>& sub : mySubDifferences)
+			{
+				ss << "\n  " << sub->ToString();
+			}
 		}
 
 		return ss.str();
