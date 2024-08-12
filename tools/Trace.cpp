@@ -101,7 +101,7 @@ namespace fisk::tools
 	{
 		assert(!myActive.empty());
 
-		myActive.top().Apply();
+		myCurrentScope = myActive.top().Apply();
 		myActive.pop();
 	}
 	
