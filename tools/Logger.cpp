@@ -6,7 +6,6 @@
 
 #include "tools/Logger.h"
 #include "tools/Macros.h"
-#include "tools/Time.h"
 
 #if WIN32
 
@@ -31,7 +30,7 @@ namespace fisk::tools
     std::unordered_map<LoggerType, char> ColorMapping;
     std::unordered_map<std::string, std::ofstream> OpenFiles;
 
-    float RapportTimeStamp = GetTotalTime();
+    float RapportTimeStamp = 0.f; // TODO fix all of this
 
     struct LoggerNode
     {
