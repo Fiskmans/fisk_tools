@@ -80,7 +80,7 @@ namespace fisk::tools
 	{
 		Trace& next = myCurrentScope->FindOrMake(aTag);
 
-		myActive.emplace(ActiveTrace(myCurrentScope, &next));
+		myActive.emplace(ActiveTrace(&next, myCurrentScope));
 		myCurrentScope = &next;
 		
 		return { this };
