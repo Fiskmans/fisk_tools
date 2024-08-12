@@ -6,6 +6,11 @@
 
 namespace fisk::tools
 {
+
+	std::unordered_map<std::thread::id, std::unique_ptr<PerformanceTracer>> PerformanceTracer::ourInstances;
+	std::mutex PerformanceTracer::ourRootMutex;
+	Trace PerformanceTracer::ourRoot{ "<root>" };
+
 	Trace::Trace(std::string aTag)
 		: myTag(aTag)
 		, myTimeSpent{0}
