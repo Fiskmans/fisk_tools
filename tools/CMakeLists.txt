@@ -22,6 +22,10 @@ list(APPEND files "Logger.cpp" 			"Logger.h")
 list(APPEND files "EggClock.cpp" 		"EggClock.h")
 list(APPEND files "Trace.cpp" 			"Trace.h")
 
+list(APPEND files "http/EndPoint.h")
+list(APPEND files "http/Server.cpp" 	"http/Server.h")
+list(APPEND files "http/Frame.cpp" 		"http/Frame.h")
+
 list(APPEND files "Net.h"				"WinNet.cpp"				"LinuxNet.cpp")
 list(APPEND files "Socket.h"			"WinSocket.cpp"				"LinuxSocket.cpp")
 list(APPEND files "TCPListenSocket.h"	"WinTCPListenSocket.cpp"	"LinuxTCPListenSocket.cpp")

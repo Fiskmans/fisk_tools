@@ -31,6 +31,29 @@ namespace fisk::tools
 		operator bool();
 	};
 
+	class StreamIterator
+	{
+	public:
+		using value_type = uint8_t;
+		using difference_type = long long;
+
+		StreamIterator();
+		StreamIterator(const StreamOffset& aOffset);
+		StreamIterator(StreamSegment* aSegment, long long aOffset);
+
+		value_type& operator*();
+		value_type& operator*() const;
+
+		StreamIterator& operator++();
+		StreamIterator operator++(int);
+
+		bool operator==(const StreamIterator& aOther) const;
+
+	private:
+		StreamSegment* mySegment;
+		long long myOffset;
+	};
+
 	class ReadStream
 	{
 	public:
@@ -41,6 +64,8 @@ namespace fisk::tools
 
 		void CommitRead();
 		void RestoreRead();
+
+		RangeFromStartEnd<StreamIterator> AvailableData();
 
 	private:
 		size_t PrivPeek(uint8_t* aData, size_t aSize, StreamOffset& aOutEnd);

@@ -89,6 +89,11 @@ namespace fisk::tools
 		myReadHead = myCheckpoint;
 	}
 
+	RangeFromStartEnd<StreamIterator> ReadStream::AvailableData()
+	{
+		return RangeFromStartEnd<StreamIterator>(myReadHead, StreamIterator(myTail.get(), myTail->mySize));
+	}
+
 	size_t ReadStream::PrivPeek(uint8_t* aData, size_t aSize, StreamOffset& aOutEnd)
 	{
 		if (!myReadHead)
@@ -186,6 +191,62 @@ namespace fisk::tools
 			return false;
 
 		return true;
+	}
+
+	StreamIterator::StreamIterator()
+		: mySegment(nullptr)
+		, myOffset{}
+	{
+	}
+
+	StreamIterator::StreamIterator(const StreamOffset& aOffset)
+		: mySegment(aOffset.mySegment.get())
+		, myOffset(aOffset.myOffset)
+	{
+	}
+
+	StreamIterator::StreamIterator(StreamSegment* aSegment, long long aOffset)
+		: mySegment(aSegment)
+		, myOffset(aOffset)
+	{
+	}
+
+	StreamIterator::value_type& StreamIterator::operator*()
+	{
+		return mySegment->myData[myOffset];
+	}
+
+	StreamIterator::value_type& StreamIterator::operator*() const
+	{
+		return mySegment->myData[myOffset];
+	}
+
+	StreamIterator& StreamIterator::operator++()
+	{
+		if (myOffset == mySegment->mySize)
+		{
+			mySegment = mySegment->myNext.get();
+			myOffset = 0;
+		}
+
+		myOffset++;
+
+		return *this;
+	}
+
+	StreamIterator StreamIterator::operator++(int)
+	{
+		StreamIterator copy(*this);
+		++*this;
+		return copy;
+	}
+
+	bool StreamIterator::operator==(const StreamIterator& aOther) const
+	{
+		if (mySegment != aOther.mySegment)
+			return false;
+
+		return myOffset == aOther.myOffset;
 	}
 
 } // namespace fisk::tools
