@@ -217,99 +217,97 @@ namespace fisk::tools
 		return !IsNull();
 	}
 
-	std::string Json::Serialize(bool aPretty)
+	std::string Json::Serialize(bool aPretty) const
 	{
-		std::stringstream stream;
+		std::stringstream ss;
+		this->Serialize(ss, aPretty);
+		return ss.str();
+	}
+
+	void Json::Serialize(std::ostream& aOutStream, bool aPretty, std::string aNewline) const
+	{
 		switch (myValue.index())
 		{
 		case 0:
-			stream << "null";
+			aOutStream << "null";
 			break;
 		case 1:
-			stream << std::get<NumberType>(myValue);
+			aOutStream << std::get<NumberType>(myValue);
 			break;
 		case 2:
-			stream << '"' << std::get<StringType>(myValue) << '"';
+			aOutStream << '"' << std::get<StringType>(myValue) << '"';
 			break;
 		case 3:
-			stream << std::get<BooleanType>(myValue) ? "true" : "false";
+			aOutStream << std::get<BooleanType>(myValue) ? "true" : "false";
 			break;
 		case 4:
+		{
+			const ArrayType& children = std::get<ArrayType>(myValue);
+
+			bool containExpanded = false;
+			for (const std::unique_ptr<Json>& child : children)
 			{
-				ArrayType& children = std::get<ArrayType>(myValue);
-
-				bool containExpanded = false;
-				for (std::unique_ptr<Json>& child : children)
+				switch (child->myValue.index())
 				{
-					switch (child->myValue.index())
-					{
-					case 4:
-					case 5:
-						containExpanded = true;
-						break;
-					}
+				case 4:
+				case 5:
+					containExpanded = true;
+					break;
 				}
-				stream << '[';
-				if (aPretty && containExpanded)
-					stream << "\n\t";
-
-				bool first = true;
-				for (std::unique_ptr<Json>& child : children)
-				{
-					if (!first)
-					{
-						if (aPretty && containExpanded)
-							stream << ",\n\t";
-						else
-							stream << ',';
-					}
-
-					if (aPretty)
-						json_help::WriteAndIndent(stream, child->Serialize(true));
-					else
-						stream << child->Serialize(false);
-
-					first = false;
-				}
-
-				if (aPretty && containExpanded)
-					stream << '\n';
-
-				stream << ']';
 			}
-			break;
-		case 5:
+			aOutStream << '[';
+			if (aPretty && containExpanded)
+				aOutStream << aNewline << "\t";
+
+			bool first = true;
+			for (const std::unique_ptr<Json>& child : children)
 			{
-				ObjectType& children = std::get<ObjectType>(myValue);
-				stream << '[';
-
-				for (auto& kvPair : children)
+				if (!first)
 				{
-					if (aPretty)
-						stream << "\n\t";
-
-					stream << '"';
-					stream << kvPair.first;
-					stream << "\":";
-
-					if (aPretty)
-						stream << ' ';
-
-					if (aPretty)
-						json_help::WriteAndIndent(stream, kvPair.second->Serialize(true));
+					if (aPretty && containExpanded)
+						aOutStream << "," << aNewline << "\t";
 					else
-						stream << kvPair.second->Serialize(false);
+						aOutStream << ',';
 				}
+
+				child->Serialize(aOutStream, aPretty, aPretty ? aNewline : aNewline + "\n");
+
+				first = false;
+			}
+
+			if (aPretty && containExpanded)
+				aOutStream << aNewline;
+
+			aOutStream << ']';
+		}
+		break;
+		case 5:
+		{
+			const ObjectType& children = std::get<ObjectType>(myValue);
+			aOutStream << '{';
+
+			for (auto& kvPair : children)
+			{
+				if (aPretty)
+					aOutStream << aNewline << "\t";
+
+				aOutStream << '"';
+				aOutStream << kvPair.first;
+				aOutStream << "\":";
 
 				if (aPretty)
-					stream << '\n';
+					aOutStream << ' ';
 
-				stream << '}';
+				kvPair.second->Serialize(aOutStream, aPretty, aPretty ? aNewline : aNewline + "\n");
+			}
+
+			if (aPretty)
+				aOutStream << aNewline;
+
+			aOutStream << '}';
 			}
 			break;
 		}
-
-		return stream.str();
 	}
 
 	bool Json::GetIf(long long& aValue) const

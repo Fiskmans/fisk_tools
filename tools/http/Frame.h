@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tools/Stream.h"
+#include "tools/Json.h"
 
 #include <string>
 #include <optional>
@@ -71,6 +72,7 @@ namespace fisk::tools::http
 
 		void WriteText(std::string aText);
 		void WriteTextLine(std::string aText);
+		void WriteJson(const Json& aJson);
 
 		void WriteRawHtml(std::string aHtml);
 

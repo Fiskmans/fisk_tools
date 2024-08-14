@@ -6,14 +6,35 @@
 
 #include <iostream>
 
-class FixedEndpoint : public fisk::tools::http::Endpoint
+class FixedHtmlEndpoint : public fisk::tools::http::Endpoint
 {
 public:
-	inline FixedEndpoint(std::string aContent)
+	inline FixedHtmlEndpoint(std::string aContent)
 	{
 		myResponse.myCode = fisk::tools::http::CommonResponseCodes::OK;
 
 		myResponse.WriteRawHtml(aContent);
+		myResponse.CalculateSize();
+	}
+
+	fisk::tools::http::ResponseFrame OnFrame(const fisk::tools::http::RequestFrame& aFrame) override
+	{
+		std::cout << "Sent" << std::endl;
+		return myResponse;
+	}
+
+private:
+	fisk::tools::http::ResponseFrame myResponse;
+};
+
+class FixedJsonEndpoint : public fisk::tools::http::Endpoint
+{
+public:
+	inline FixedJsonEndpoint(fisk::tools::Json& aContent)
+	{
+		myResponse.myCode = fisk::tools::http::CommonResponseCodes::OK;
+
+		myResponse.WriteJson(aContent);
 		myResponse.CalculateSize();
 	}
 
@@ -52,18 +73,33 @@ int main()
 {
 	fisk::tools::http::Server server;
 
-	FixedEndpoint helloWorld(
+	FixedHtmlEndpoint helloWorld(
 		"<h1>Hello world!</h1>"
-		"<a href=\"/page_1\">Goto page 1</a>"	
+		"<p><a href=\"/page_1\">Goto page 1</a></p>"
+		"<p><a href=\"/page_2\">Goto page 2</a></p>"
+		"<p><a href=\"/data\">Goto data page</a></p>"
 	);
 
-	FixedEndpoint Page1(
+	FixedHtmlEndpoint Page1(
 		"<h1>Page 1</h1>"
-		"<a href=\"/\">Back</a>"	
+		"<p><a href=\"/\">Back</a></p>"
 	);
+
+	FixedHtmlEndpoint Page2(
+		"<h1>Page 2</h1>"
+		"<p><a href=\"/\">Back</a></p>"
+	);
+
+	fisk::tools::Json root;
+
+	root.AddChild("body").AddValue("Message", "Hello world");
+
+	FixedJsonEndpoint dataPage(root);
 
 	server.AddEndpoint(fisk::tools::http::RequestFrame::GET, fisk::tools::http::Server::FilterMode::Full, "/", &helloWorld);
 	server.AddEndpoint(fisk::tools::http::RequestFrame::GET, fisk::tools::http::Server::FilterMode::Full, "/page_1", &Page1);
+	server.AddEndpoint(fisk::tools::http::RequestFrame::GET, fisk::tools::http::Server::FilterMode::Full, "/page_2", &Page2);
+	server.AddEndpoint(fisk::tools::http::RequestFrame::GET, fisk::tools::http::Server::FilterMode::Full, "/data", &dataPage);
 
 	std::vector<Client*> clients;
 	fisk::tools::TCPListenSocket listenSocket(80);

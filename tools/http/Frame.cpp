@@ -187,6 +187,16 @@ namespace fisk::tools::http
 		std::copy(std::begin(LineBreak), std::end(LineBreak), std::back_inserter(myData));
 	}
 
+	void ResponseFrame::WriteJson(const Json& aJson)
+	{
+		SetOrVerifyHeader("Content-Type", "text/json");
+
+		std::string data = aJson.Serialize();
+
+		myData.reserve(myData.size() + data.length());
+		std::copy(std::begin(data), std::end(data), std::back_inserter(myData));
+	}
+
 	void ResponseFrame::WriteRawHtml(std::string aHtml)
 	{
 		SetOrVerifyHeader("Content-Type", "text/html");

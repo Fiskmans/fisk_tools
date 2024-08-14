@@ -109,7 +109,8 @@ namespace fisk::tools
 		bool IsNull() const;
 		operator bool() const;
 
-		std::string Serialize(bool aPretty = false);
+		std::string Serialize(bool aPretty = false) const;
+		void Serialize(std::ostream& aOutStream, bool aPretty = false, std::string aNewline = "") const;
 
 		template<class T>
 		Json& operator=(T aValue);
