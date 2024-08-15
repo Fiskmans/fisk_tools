@@ -1,7 +1,7 @@
 #ifndef FISK_TOOLS_TCP_SOCKET_H
 #define FISK_TOOLS_TCP_SOCKET_H
 
-#include "tools/Socket.h"
+#include "tools/net/Socket.h"
 #include "tools/Stream.h"
 #include "tools/Event.h"
 

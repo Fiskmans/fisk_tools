@@ -1,8 +1,8 @@
 
 
 #include "tools/http/Server.h"
-#include "tools/TCPSocket.h"
-#include "tools/TCPListenSocket.h"
+#include "tools/net/TCPSocket.h"
+#include "tools/net/TCPListenSocket.h"
 #include "tools/Trace.h"
 
 #include <iostream>

@@ -3,7 +3,7 @@
 
 #if FISK_PLATFORM_WINDOWS
 
-#include "tools/Socket.h"
+#include "tools/net/Socket.h"
 
 namespace fisk::tools
 {

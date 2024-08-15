@@ -2,9 +2,9 @@
 #define FISK_TOOLS_TCP_LISTEN_SOCKET_H
 
 #include "tools/Event.h"
-#include "tools/Net.h"
-#include "tools/Socket.h"
-#include "tools/TCPSocket.h"
+#include "tools/net/Net.h"
+#include "tools/net/Socket.h"
+#include "tools/net/TCPSocket.h"
 
 #include <limits>
 

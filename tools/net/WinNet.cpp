@@ -2,7 +2,7 @@
 
 #if FISK_PLATFORM_WINDOWS
 
-#include "tools/Net.h"
+#include "tools/net/Net.h"
 
 #include "tools/Logger.h"
 

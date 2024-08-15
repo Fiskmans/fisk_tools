@@ -15,12 +15,14 @@ namespace fisk::tools::http
 	class WebsocketEndpoint : public Endpoint
 	{
 	public:
-		WebsocketEndpoint();
+		WebsocketEndpoint(std::string aHost);
 
 		// Inherited via Endpoint
 		ResponseFrame OnFrame(const RequestFrame& aFrame, IConnection& aConnection) override;
 
 	private:
+		std::string myHost;
+
 		ResponseFrame myErrorFrame;
 	};
 }

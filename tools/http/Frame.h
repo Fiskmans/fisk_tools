@@ -34,6 +34,7 @@ namespace fisk::tools::http
 		bool SetMethod(std::string aMethod);
 		bool HasHeader(std::string aField) const;
 		bool GetHeader(std::string aField, std::string& aOutValue) const;
+		bool ValidateHeader(std::string aField, std::string aExpectedValue) const;
 
 		Method myMethod;
 		std::string myPath;

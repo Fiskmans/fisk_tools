@@ -3,7 +3,7 @@
 
 #include "tools/PlatformDetection.h"
 
-#include "tools/Net.h"
+#include "tools/net/Net.h"
 
 #if FISK_PLATFORM_WINDOWS
 

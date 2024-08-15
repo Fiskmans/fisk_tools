@@ -25,6 +25,7 @@ list(APPEND files "Logger.cpp" 					"Logger.h")
 list(APPEND files "EggClock.cpp" 				"EggClock.h")
 list(APPEND files "Trace.cpp" 					"Trace.h")
 list(APPEND files "Websocket.cpp" 				"Websocket.h")
+list(APPEND files "Base64.cpp" 					"Base64.h")
 
 list(APPEND files "http/EndPoint.h")
 list(APPEND files "http/IConnection.h")
@@ -32,10 +33,10 @@ list(APPEND files "http/Server.cpp" 			"http/Server.h")
 list(APPEND files "http/Frame.cpp" 				"http/Frame.h")
 list(APPEND files "http/WebsocketEndpoint.cpp" 	"http/WebsocketEndpoint.h")
 
-list(APPEND files "Net.h"						"WinNet.cpp"				"LinuxNet.cpp")
-list(APPEND files "Socket.h"					"WinSocket.cpp"				"LinuxSocket.cpp")
-list(APPEND files "TCPListenSocket.h"			"WinTCPListenSocket.cpp"	"LinuxTCPListenSocket.cpp")
-list(APPEND files "TCPSocket.h"					"WinTCPSocket.cpp"			"LinuxTCPSocket.cpp")
+list(APPEND files "net/Net.h"					"net/WinNet.cpp"				"net/LinuxNet.cpp")
+list(APPEND files "net/Socket.h"				"net/WinSocket.cpp"				"net/LinuxSocket.cpp")
+list(APPEND files "net/TCPListenSocket.h"		"net/WinTCPListenSocket.cpp"	"net/LinuxTCPListenSocket.cpp")
+list(APPEND files "net/TCPSocket.h"				"net/WinTCPSocket.cpp"			"net/LinuxTCPSocket.cpp")
 
 add_library(fisk_tools ${files})
 
@@ -46,6 +47,8 @@ else()
 endif()
 
 target_include_directories(fisk_tools PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
+target_link_libraries(fisk_tools sha1)
 
 if(WIN32)
 	target_link_libraries(fisk_tools ws2_32.lib)

@@ -140,6 +140,12 @@ namespace fisk::tools::http
 		return false;
 	}
 
+	bool RequestFrame::ValidateHeader(std::string aField, std::string aExpectedValue) const
+	{
+		auto it = myHeaders.find(aField);
+		return it != myHeaders.end() && it->second == aExpectedValue;
+	}
+
 	bool RequestFrame::TryReadLine(ReadStream& aStream, std::string& aOutLine)
 	{
 		constexpr size_t lineBreakLength = sizeof(LineBreak) - 1;

@@ -5,7 +5,7 @@
 
 #if FISK_PLATFORM_WINDOWS
 
-#include "tools/TCPSocket.h"
+#include "tools/net/TCPSocket.h"
 
 #define NOMINMAX
 #include <WinSock2.h>

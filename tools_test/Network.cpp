@@ -3,8 +3,8 @@
 #include <catch2/catch_all.hpp>
 
 #include "tools/EggClock.h"
-#include "tools/TCPListenSocket.h"
-#include "tools/TCPSocket.h"
+#include "tools/net/TCPListenSocket.h"
+#include "tools/net/TCPSocket.h"
 
 #include "tools/SystemValues.h"
 
