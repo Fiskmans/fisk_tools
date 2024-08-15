@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tools/http/Frame.h"
+#include "tools/http/IConnection.h"
 
 namespace fisk::tools::http
 {
@@ -9,6 +10,6 @@ namespace fisk::tools::http
 	public:
 		virtual ~Endpoint() = default;
 
-		virtual ResponseFrame OnFrame(const RequestFrame& aFrame) = 0;
+		virtual ResponseFrame OnFrame(const RequestFrame& aFrame, IConnection& aConnection) = 0;
 	};
 }

@@ -1,8 +1,10 @@
 #pragma once
 
 #include "tools/Event.h"
+#include "tools/Stream.h"
 
 #include "tools/http/EndPoint.h"
+#include "tools/http/IConnection.h"
 
 namespace fisk::tools::http
 {
@@ -20,7 +22,7 @@ namespace fisk::tools::http
 
 		void AddEndpoint(RequestFrame::Method aMethodFilter, FilterMode aPathFilterMode, std::string aPathFilter, Endpoint* aEndpoint);
 
-		void UpdateOn(ReadStream& aReadStream, WriteStream& aWriteStream);
+		void UpdateOn(IConnection& aConnection);
 
 		void SetDefaultResponse(ResponseFrame aResponse);
 	private:
@@ -28,11 +30,11 @@ namespace fisk::tools::http
 		class EndpointMapping
 		{
 		public:
-			EndpointMapping(RequestFrame::Method aMethodFilter, FilterMode aPathFilterMode, std::string aPathFilter, Endpoint* aEndpoint, ShortCircutableEvent<ResponseFrame, RequestFrame*>& aEvent);
+			EndpointMapping(RequestFrame::Method aMethodFilter, FilterMode aPathFilterMode, std::string aPathFilter, Endpoint* aEndpoint, ShortCircutableEvent<ResponseFrame, RequestFrame*, IConnection*>& aEvent);
 
 		private:
 
-			std::optional<ResponseFrame> OnFrame(RequestFrame* aFrame);
+			std::optional<ResponseFrame> OnFrame(RequestFrame* aFrame, IConnection* aConnection);
 
 			EventReg myEventHandle;
 
@@ -47,6 +49,6 @@ namespace fisk::tools::http
 
 		ResponseFrame myDefaultResponse;
 
-		ShortCircutableEvent<ResponseFrame, RequestFrame*> OnFrame;
+		ShortCircutableEvent<ResponseFrame, RequestFrame*, IConnection*> OnFrame;
 	};
 }

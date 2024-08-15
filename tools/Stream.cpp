@@ -74,6 +74,7 @@ namespace fisk::tools
 
 	void ReadStream::CommitRead()
 	{
+		// avoid stack overflow from destruction
 		while (myCheckpoint.mySegment != myReadHead.mySegment)
 		{
 			std::shared_ptr<StreamSegment> next = myCheckpoint.mySegment->myNext;

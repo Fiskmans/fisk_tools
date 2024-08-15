@@ -79,4 +79,12 @@ namespace fisk::tools
 #define CONCAT_INNER(a, b) a ## b
 #define CONCAT(a, b) CONCAT_INNER(a, b)
 
+#if FISK_TRACING_ENABLED
+
 #define FISK_TRACE(TAG) fisk::tools::PerformanceTracer::ScopeHandle CONCAT(TraceHandle, __COUNTER__) = fisk::tools::PerformanceTracer::Begin(TAG)
+
+#else 
+
+#define FISK_TRACE(tag) static_cast<void>(tag)
+
+#endif

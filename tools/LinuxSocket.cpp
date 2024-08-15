@@ -14,6 +14,12 @@ namespace fisk::tools
 		if (myValue != -1)
 			::close(myValue);
 	}
+
+	std::string Socket::GetAddress() const
+	{
+		return "<not yet implemented>";
+	}
+
 } // namespace fisk::tools
 
 #endif

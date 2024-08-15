@@ -5,6 +5,7 @@
 
 #include "tools/Logger.h"
 #include "tools/TCPListenSocket.h"
+#include "tools/Trace.h"
 
 #include <cassert>
 
@@ -110,8 +111,10 @@ namespace fisk::tools
 
 	bool TCPListenSocket::Update()
 	{
+		FISK_TRACE("tcp_listen_update");
 		while (true)
 		{
+			FISK_TRACE("accept_attempt");
 			SOCKET next = ::accept(mySocket.myValue, nullptr, nullptr);
 
 			if (next == INVALID_SOCKET)
@@ -140,12 +143,13 @@ namespace fisk::tools
 				}
 			}
 
-			std::shared_ptr<Socket> sock = std::make_shared<Socket>();
-			sock->myValue				 = next;
+			{
+				FISK_TRACE("accept_success_event");
+				std::shared_ptr<Socket> sock = std::make_shared<Socket>();
+				sock->myValue				 = next;
 
-
-
-			OnNewConnection.Fire(std::make_shared<TCPSocket>(sock));
+				OnNewConnection.Fire(std::make_shared<TCPSocket>(sock));
+			}
 		}
 	}
 

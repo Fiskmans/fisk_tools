@@ -22,6 +22,7 @@ namespace fisk::tools
 
 		WriteStream& GetWriteStream();
 		ReadStream& GetReadStream();
+		const Socket& GetSocket();
 
 		Event<> OnDataAvailable;
 
@@ -48,6 +49,11 @@ namespace fisk::tools
 	inline ReadStream& TCPSocket::GetReadStream()
 	{
 		return myReadStream;
+	}
+
+	inline const Socket& TCPSocket::GetSocket()
+	{
+		return *mySocket;
 	}
 }
 

@@ -10,9 +10,11 @@
 #define NOMINMAX
 #include <WinSock2.h>
 #include <Windows.h>
+#include <ws2tcpip.h>
 
 #endif
 
+#include <string>
 #include <cstdint>
 
 namespace fisk::tools
@@ -29,6 +31,8 @@ namespace fisk::tools
 		void operator=(const Socket& aOther) = delete;
 
 		NetHandle myHandle = Net::GetInstance().Use();
+
+		std::string	GetAddress() const;
 
 #if FISK_PLATFORM_WINDOWS
 		SOCKET myValue = INVALID_SOCKET;

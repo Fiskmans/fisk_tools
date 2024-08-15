@@ -15,21 +15,21 @@ namespace fisk::tools::http
 		myMappings.push_back(std::make_unique<EndpointMapping>(aMethodFilter, aPathFilterMode, aPathFilter, aEndpoint, OnFrame));
 	}
 
-	void Server::UpdateOn(ReadStream& aReadStream, WriteStream& aWriteStream)
+	void Server::UpdateOn(IConnection& aConnection)
 	{
 		while (true)
 		{
-			std::optional<RequestFrame> frame = RequestFrame::FromStream(aReadStream);
+			std::optional<RequestFrame> frame = RequestFrame::FromStream(aConnection.GetReadStream());
 
 			if (!frame)
 				break;
 
-			std::optional<ResponseFrame> response = OnFrame.Fire(&(*frame));
+			std::optional<ResponseFrame> response = OnFrame.Fire(&(*frame), &aConnection);
 
 			if (response)
-				response->ToStream(aWriteStream);
+				response->ToStream(aConnection.GetWriteStream());
 			else
-				myDefaultResponse.ToStream(aWriteStream);
+				myDefaultResponse.ToStream(aConnection.GetWriteStream());
 		}
 	}
 
@@ -38,16 +38,16 @@ namespace fisk::tools::http
 		myDefaultResponse = aResponse;
 	}
 
-	Server::EndpointMapping::EndpointMapping(RequestFrame::Method aMethodFilter, FilterMode aPathFilterMode, std::string aPathFilter, Endpoint* aEndpoint, ShortCircutableEvent<ResponseFrame, RequestFrame*>& aEvent)
+	Server::EndpointMapping::EndpointMapping(RequestFrame::Method aMethodFilter, FilterMode aPathFilterMode, std::string aPathFilter, Endpoint* aEndpoint, ShortCircutableEvent<ResponseFrame, RequestFrame*, IConnection*>& aEvent)
 		: myMethod(aMethodFilter)
 		, myPathFilterMode(aPathFilterMode)
 		, myPathFilter(aPathFilter)
 		, myEndpoint(aEndpoint)
 	{
-		myEventHandle = aEvent.Register(std::bind(&EndpointMapping::OnFrame, this, std::placeholders::_1));
+		myEventHandle = aEvent.Register(std::bind(&EndpointMapping::OnFrame, this, std::placeholders::_1, std::placeholders::_2));
 	}
 
-	std::optional<ResponseFrame> Server::EndpointMapping::OnFrame(RequestFrame* aFrame)
+	std::optional<ResponseFrame> Server::EndpointMapping::OnFrame(RequestFrame* aFrame, IConnection* aConnection)
 	{
 		if (!(aFrame->myMethod & myMethod))
 			return {};
@@ -62,6 +62,6 @@ namespace fisk::tools::http
 				return {};
 		}
 
-		return myEndpoint->OnFrame(*aFrame);
+		return myEndpoint->OnFrame(*aFrame, *aConnection);
 	}
 }

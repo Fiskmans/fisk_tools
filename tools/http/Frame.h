@@ -32,6 +32,8 @@ namespace fisk::tools::http
 		static std::optional<RequestFrame> FromStream(ReadStream& aStream);
 
 		bool SetMethod(std::string aMethod);
+		bool HasHeader(std::string aField) const;
+		bool GetHeader(std::string aField, std::string& aOutValue) const;
 
 		Method myMethod;
 		std::string myPath;
@@ -54,6 +56,7 @@ namespace fisk::tools::http
 	namespace CommonResponseCodes
 	{
 		inline ResponseCode OK{ 200, "OK" };
+		inline ResponseCode Forbidden{ 403, "Forbidden" };
 		inline ResponseCode NOT_Found{ 404, "Not Found" };
 	}
 

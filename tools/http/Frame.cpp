@@ -123,6 +123,23 @@ namespace fisk::tools::http
 		return false;
 	}
 
+	bool RequestFrame::HasHeader(std::string aField) const
+	{
+		return myHeaders.find(aField) != myHeaders.end();
+	}
+
+	bool RequestFrame::GetHeader(std::string aField, std::string& aOutValue) const
+	{
+		auto it = myHeaders.find(aField);
+		if (it != myHeaders.end())
+		{
+			aOutValue = it->second;
+			return true;
+		}
+
+		return false;
+	}
+
 	bool RequestFrame::TryReadLine(ReadStream& aStream, std::string& aOutLine)
 	{
 		constexpr size_t lineBreakLength = sizeof(LineBreak) - 1;
