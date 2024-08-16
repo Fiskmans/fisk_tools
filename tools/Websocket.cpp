@@ -242,7 +242,7 @@ namespace fisk::tools
 		if (aPayload.size() > std::numeric_limits<uint16_t>::max())
 		{
 			uint64_t length = aPayload.size();
-			uint8_t shortLength = masked | 0x8F;
+			uint8_t shortLength = masked | 0x7F;
 
 			writer.Process(shortLength);
 			writer.Process(length);
@@ -250,7 +250,7 @@ namespace fisk::tools
 		else if (aPayload.size() > 125)
 		{
 			uint16_t length = aPayload.size();
-			uint8_t shortLength = masked | 0x8E;
+			uint8_t shortLength = masked | 0x7E;
 
 			writer.Process(shortLength);
 			writer.Process(length);
