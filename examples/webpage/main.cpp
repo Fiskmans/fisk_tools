@@ -338,8 +338,25 @@ private:
 	fisk::tools::EventReg myMessageHandle;
 };
 
-int main()
+int main(int argc, char** argv)
 {
+	uint16_t port = 80;
+
+	if (argc > 1)
+	{
+		char* start = argv[1];
+		char* end = start + ::strlen(start);
+
+		std::from_chars_result result = std::from_chars(start, end, port);
+
+		if (result.ec != std::errc{})
+		{
+			std::cout << "Failed to parse port number from first argument: " << argv[1] << "\n";
+			return EXIT_FAILURE;
+		}
+	}
+
+
 	fisk::tools::http::Server server;
 
 	StaticHtmlEndpoint helloWorld(
@@ -495,12 +512,14 @@ int main()
 	server.AddEndpoint(fisk::tools::http::RequestFrame::GET, fisk::tools::http::Server::FilterMode::Full, "/trace", &tracePage);
 
 	std::vector<Client*> clients;
-	fisk::tools::TCPListenSocket listenSocket(80);
+	fisk::tools::TCPListenSocket listenSocket(port);
 
 	fisk::tools::EventReg newConnectionHandle = listenSocket.OnNewConnection.Register([&clients, &server](std::shared_ptr<fisk::tools::TCPSocket> aSocket)
 	{
 		clients.push_back(new Client(aSocket, server));
 	});
+
+	std::cout << "Started webserver on " << listenSocket.GetPort() << "\n";
 
 	while (true)
 	{
