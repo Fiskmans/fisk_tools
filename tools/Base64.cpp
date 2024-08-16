@@ -2,6 +2,7 @@
 #include "tools/Base64.h"
 
 #include <cassert>
+#include <cstring>
 
 namespace fisk::tools
 {

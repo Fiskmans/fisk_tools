@@ -5,7 +5,7 @@
 
 #if FISK_PLATFORM_LINUX
 
-#include "tools/TCPSocket.h"
+#include "tools/net/TCPSocket.h"
 
 #include <netdb.h>
 #include <sys/types.h>

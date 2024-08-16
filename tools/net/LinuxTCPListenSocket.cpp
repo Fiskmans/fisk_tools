@@ -4,7 +4,7 @@
 #if FISK_PLATFORM_LINUX
 
 #include "tools/Logger.h"
-#include "tools/TCPListenSocket.h"
+#include "tools/net/TCPListenSocket.h"
 
 #include <cassert>
 #include <cstring>

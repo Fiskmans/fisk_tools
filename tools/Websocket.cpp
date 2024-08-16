@@ -1,7 +1,9 @@
 
-#include "tools/websocket.h"
+#include "tools/Websocket.h"
 #include "tools/StreamReader.h"
 #include "tools/StreamWriter.h"
+
+#include <cstring>
 
 namespace fisk::tools
 {

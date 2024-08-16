@@ -3,7 +3,7 @@
 
 #if FISK_PLATFORM_LINUX
 
-#include "tools/Socket.h"
+#include "tools/net/Socket.h"
 
 #include <unistd.h>
 

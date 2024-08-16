@@ -5,7 +5,7 @@
 #include "tools/Base64.h"
 #include "tools/Hexadecimal.h"
 
-#include <Sha1.hpp>
+#include <sha1.hpp>
 
 namespace fisk::tools::http
 {

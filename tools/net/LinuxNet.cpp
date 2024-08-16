@@ -2,7 +2,7 @@
 
 #if FISK_PLATFORM_LINUX
 
-#include "tools/Net.h"
+#include "tools/net/Net.h"
 
 namespace fisk::tools
 {
