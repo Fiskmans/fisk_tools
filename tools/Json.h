@@ -104,6 +104,8 @@ namespace fisk::tools
 		Json& PushValue(const T& aValue);
 		Json& PushChild(std::unique_ptr<Json> aChild = std::make_unique<Json>());
 
+		void ConvertToArray();
+
 		bool HasChild(const char* aKey) const;
 
 		bool IsNull() const;

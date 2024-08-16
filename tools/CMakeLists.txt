@@ -29,7 +29,7 @@ list(APPEND files "Base64.cpp" 					"Base64.h")
 list(APPEND files "Hexadecimal.cpp" 			"Hexadecimal.h")
 
 list(APPEND files "http/EndPoint.h")
-list(APPEND files "http/IConnection.h")
+list(APPEND files "http/IConnection.cpp"		"http/IConnection.h")
 list(APPEND files "http/Server.cpp" 			"http/Server.h")
 list(APPEND files "http/Frame.cpp" 				"http/Frame.h")
 list(APPEND files "http/WebsocketEndpoint.cpp" 	"http/WebsocketEndpoint.h")

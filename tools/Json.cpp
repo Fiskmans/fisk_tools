@@ -207,6 +207,15 @@ namespace fisk::tools
 		return out;
 	}
 
+	void Json::ConvertToArray()
+	{
+		if (this == &NullObject)
+			return;
+
+		if (std::holds_alternative<NullType>(myValue))
+			myValue = ArrayType();
+	}
+
 	bool Json::IsNull() const
 	{
 		return std::holds_alternative<NullType>(myValue);

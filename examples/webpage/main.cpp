@@ -320,6 +320,8 @@ public:
 
 		fisk::tools::Json& messages = body.AddChild("messages");
 
+		messages.ConvertToArray();
+
 		for (Message& message : myDataBase.GetAll())
 		{
 			fisk::tools::Json& messageJson = messages.PushChild();
@@ -372,7 +374,7 @@ int main()
 			R"(<br>)"
 			R"-(<button type="button" onclick="SendMessage()">Send</button>)-"
 		R"(</div>)"
-		R"(<div id="message_box"/>)"
+		R"(<div id="chat_log"/>)"
 
 		R"(<script>)"
 		R"(
@@ -422,6 +424,23 @@ int main()
 			console.log("sent", payload);
 		}
 
+		function escapeHtml(unsafe) 
+		{
+			return unsafe.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+		}
+
+		function AddMessage(from, message)
+		{
+			console.log("Adding message from " + from);
+
+			let chatLog = document.getElementById("chat_log");
+
+			let line = document.createElement("p");
+			line.innerHTML = escapeHtml(from + ": " + message);
+
+			chatLog.append(line);
+		}
+
 		let ws = new WebSocket("chat_socket");
 
 		ws.addEventListener("open", (event) => {
@@ -431,6 +450,24 @@ int main()
 		ws.addEventListener("message", (event) =>
 		{
 			console.log("Message from server ", event.data);
+
+			let parsedEvent = JSON.parse(event.data);
+
+			console.log("Parsed ", event.data);
+
+			switch (parsedEvent.type)
+			{
+				case "new_message":
+					AddMessage(parsedEvent.body.sender, parsedEvent.body.message);
+					break;
+				case "history":
+					for (let message of parsedEvent.body.messages)
+					{
+						AddMessage(message.sender, message.message);
+					}
+					break;
+			}
+	
 		});
 
 		)"
