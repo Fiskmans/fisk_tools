@@ -286,8 +286,15 @@ namespace fisk::tools
 			const ObjectType& children = std::get<ObjectType>(myValue);
 			aOutStream << '{';
 
+			bool first = true;
+
 			for (auto& kvPair : children)
 			{
+				if (!first)
+					aOutStream << ',';
+
+				first = false;
+
 				if (aPretty)
 					aOutStream << aNewline << "\t";
 

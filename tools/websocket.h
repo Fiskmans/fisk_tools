@@ -29,7 +29,7 @@ namespace fisk::tools
 		Event<Blob> OnData;
 
 		void SendData();
-		void SendText();
+		void SendText(std::string aData);
 
 		void Close();
 

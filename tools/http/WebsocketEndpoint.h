@@ -4,25 +4,25 @@
 
 namespace fisk::tools::http
 {
-	class IWebsocketCapableConnection : IConnection
+	class WebsocketEndpoint;
+
+	class IWebsocketCapable
 	{
 	public:
-		virtual ~IWebsocketCapableConnection() = default;
+		virtual ~IWebsocketCapable() = default;
 
-		virtual void UpgradeToWebsocket() = 0;
+		virtual void UpgradeToWebsocket(WebsocketEndpoint* aUpgrader) = 0;
 	};
 
 	class WebsocketEndpoint : public Endpoint
 	{
 	public:
-		WebsocketEndpoint(std::string aHost);
+		WebsocketEndpoint();
 
 		// Inherited via Endpoint
-		ResponseFrame OnFrame(const RequestFrame& aFrame, IConnection& aConnection) override;
+		IConnection::RequestResult OnFrame(const RequestFrame& aFrame, IConnection& aConnection) override;
 
 	private:
-		std::string myHost;
-
 		ResponseFrame myErrorFrame;
 	};
 }

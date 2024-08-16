@@ -26,6 +26,16 @@ namespace fisk::tools
 		return true;
 	}
 
+	void Websocket::SendText(std::string aData)
+	{
+		std::vector<uint8_t> rawData;
+
+		rawData.resize(aData.length());
+		memcpy(rawData.data(), aData.data(), aData.length());
+
+		SendFrame(Frame::Opcode::Text, rawData);
+	}
+
 	bool Websocket::TryParseFrame()
 	{
 		myReadStream.RestoreRead();
@@ -41,12 +51,12 @@ namespace fisk::tools
 		if (!reader.Process(maskAndSmallLength))
 			return false;
 
-		myReusedFrame.myIsFin = !!(headerByte & 0x01);
-		myReusedFrame.myOpCode = static_cast<Frame::Opcode>((headerByte & 0xF0) >> 4);
+		myReusedFrame.myIsFin = !!(headerByte & 0x80);
+		myReusedFrame.myOpCode = static_cast<Frame::Opcode>(headerByte & 0x0F);
 
-		bool masked = !!(maskAndSmallLength & 0x01);
+		bool masked = !!(maskAndSmallLength & 0x80);
 
-		uint8_t shortLength = (maskAndSmallLength & 0xFE) >> 1;
+		uint8_t shortLength = maskAndSmallLength & 0x7F;
 		
 		uint64_t actualLength = 0;
 
@@ -197,8 +207,18 @@ namespace fisk::tools
 			break;
 		case Frame::Opcode::Close:
 			{
-
+				if (!myHasClosed)
+					SendFrame(Frame::Opcode::Close, myReusedFrame.myPayload);
 			}
+			break;
+		case Frame::Ping:
+			{
+				if (!myHasClosed)
+					SendFrame(Frame::Opcode::Pong, myReusedFrame.myPayload);
+			}
+			break;
+		case Frame::Pong:
+			break;
 		case Frame::Opcode::Continuation:
 			Fail("Continuation should not show up in this context");
 			break;
@@ -212,7 +232,7 @@ namespace fisk::tools
 	{
 		StreamWriter writer(myWriteStream);
 
-		uint8_t headerByte = 0x01 | (aOpCode << 4);
+		uint8_t headerByte = 0x80 | aOpCode;
 		writer.Process(headerByte);
 
 		uint8_t masked = 0x00;
@@ -220,7 +240,7 @@ namespace fisk::tools
 		if (aPayload.size() > std::numeric_limits<uint16_t>::max())
 		{
 			uint64_t length = aPayload.size();
-			uint8_t shortLength = masked | 0xFE;
+			uint8_t shortLength = masked | 0x8F;
 
 			writer.Process(shortLength);
 			writer.Process(length);
@@ -228,14 +248,14 @@ namespace fisk::tools
 		else if (aPayload.size() > 125)
 		{
 			uint16_t length = aPayload.size();
-			uint8_t shortLength = masked | 0xFC;
+			uint8_t shortLength = masked | 0x8E;
 
 			writer.Process(shortLength);
 			writer.Process(length);
 		}
 		else
 		{
-			uint8_t shortLength = masked | static_cast<uint8_t>(aPayload.size() << 1);
+			uint8_t shortLength = masked | static_cast<uint8_t>(aPayload.size());
 
 			writer.Process(shortLength);
 		}

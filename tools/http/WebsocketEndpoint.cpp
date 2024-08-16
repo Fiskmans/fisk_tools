@@ -3,13 +3,13 @@
 
 #include "tools/Json.h"
 #include "tools/Base64.h"
+#include "tools/Hexadecimal.h"
 
 #include <Sha1.hpp>
 
 namespace fisk::tools::http
 {
-	WebsocketEndpoint::WebsocketEndpoint(std::string aHost)
-		: myHost(aHost)
+	WebsocketEndpoint::WebsocketEndpoint()
 	{
 		Json root;
 
@@ -23,43 +23,52 @@ namespace fisk::tools::http
 		myErrorFrame.CalculateSize();
 	}
 
-	ResponseFrame WebsocketEndpoint::OnFrame(const RequestFrame& aFrame, IConnection& aConnection)
+	IConnection::RequestResult WebsocketEndpoint::OnFrame(const RequestFrame& aFrame, IConnection& aConnection)
 	{
-		IWebsocketCapableConnection* conn = dynamic_cast<IWebsocketCapableConnection*>(&aConnection);
+		IWebsocketCapable* conn = dynamic_cast<IWebsocketCapable*>(&aConnection);
 
 		if (!conn)
-			return myErrorFrame;
+			return aConnection.Send(myErrorFrame);
 
 		if (!aFrame.ValidateHeader("Sec-WebSocket-Version", "13"))
-			return myErrorFrame;
+			return aConnection.Send(myErrorFrame);
 		if (!aFrame.ValidateHeader("Connection", "Upgrade"))
-			return myErrorFrame;
+			return aConnection.Send(myErrorFrame);
 		if (!aFrame.ValidateHeader("Upgrade", "websocket"))
-			return myErrorFrame;
+			return aConnection.Send(myErrorFrame);
 		if (!aFrame.HasHeader("Host"))
-			return myErrorFrame;
+			return aConnection.Send(myErrorFrame);
 
 		if (aFrame.HasHeader("Sec-WebSocket-Protocol"))
-			return myErrorFrame;
-		if (aFrame.HasHeader("Sec-WebSocket-Extensions"))
-			return myErrorFrame;
-
+			return aConnection.Send(myErrorFrame);
 
 		std::string key;
 		if (!aFrame.GetHeader("Sec-WebSocket-Key", key))
-			return myErrorFrame;
+			return aConnection.Send(myErrorFrame);
 
 		ResponseFrame response;
 
 		SHA1 sha1;
 
-		Base64::Decode(key);
+		sha1.update(key);
+		sha1.update("258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
 
-		//response.SetOrVerifyHeader("Sec-WebSocket-Accept", );
+		std::optional<std::vector<uint8_t>> sha1Data = HexaDecimal::TryDecode(sha1.final());
+
+		if (!sha1Data)
+			return aConnection.Send(myErrorFrame);
+
+
+		response.myCode = CommonResponseCodes::SwitchingProtocols;
+		response.SetOrVerifyHeader("Sec-WebSocket-Accept", Base64::Encode(*sha1Data));
 		response.SetOrVerifyHeader("Connection", "Upgrade");
 		response.SetOrVerifyHeader("Upgrade", "websocket");
 
-		return response;
+		aConnection.Send(response);
+
+		conn->UpgradeToWebsocket(this);
+
+		return IConnection::RequestResult::Should_Terminate;
 	}
 }
 

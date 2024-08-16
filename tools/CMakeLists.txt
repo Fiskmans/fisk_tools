@@ -26,6 +26,7 @@ list(APPEND files "EggClock.cpp" 				"EggClock.h")
 list(APPEND files "Trace.cpp" 					"Trace.h")
 list(APPEND files "Websocket.cpp" 				"Websocket.h")
 list(APPEND files "Base64.cpp" 					"Base64.h")
+list(APPEND files "Hexadecimal.cpp" 			"Hexadecimal.h")
 
 list(APPEND files "http/EndPoint.h")
 list(APPEND files "http/IConnection.h")

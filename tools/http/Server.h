@@ -30,11 +30,11 @@ namespace fisk::tools::http
 		class EndpointMapping
 		{
 		public:
-			EndpointMapping(RequestFrame::Method aMethodFilter, FilterMode aPathFilterMode, std::string aPathFilter, Endpoint* aEndpoint, ShortCircutableEvent<ResponseFrame, RequestFrame*, IConnection*>& aEvent);
+			EndpointMapping(RequestFrame::Method aMethodFilter, FilterMode aPathFilterMode, std::string aPathFilter, Endpoint* aEndpoint, ShortCircutableEvent<IConnection::RequestResult, RequestFrame*, IConnection*>& aEvent);
 
 		private:
 
-			std::optional<ResponseFrame> OnFrame(RequestFrame* aFrame, IConnection* aConnection);
+			std::optional<IConnection::RequestResult> OnFrame(RequestFrame* aFrame, IConnection* aConnection);
 
 			EventReg myEventHandle;
 
@@ -49,6 +49,6 @@ namespace fisk::tools::http
 
 		ResponseFrame myDefaultResponse;
 
-		ShortCircutableEvent<ResponseFrame, RequestFrame*, IConnection*> OnFrame;
+		ShortCircutableEvent<IConnection::RequestResult, RequestFrame*, IConnection*> OnFrame;
 	};
 }

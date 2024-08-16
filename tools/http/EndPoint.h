@@ -10,6 +10,7 @@ namespace fisk::tools::http
 	public:
 		virtual ~Endpoint() = default;
 
-		virtual ResponseFrame OnFrame(const RequestFrame& aFrame, IConnection& aConnection) = 0;
+
+		virtual IConnection::RequestResult OnFrame(const RequestFrame& aFrame, IConnection& aConnection) = 0;
 	};
 }

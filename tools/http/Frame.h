@@ -36,6 +36,8 @@ namespace fisk::tools::http
 		bool GetHeader(std::string aField, std::string& aOutValue) const;
 		bool ValidateHeader(std::string aField, std::string aExpectedValue) const;
 
+		bool GetAsJson(fisk::tools::Json& aOutRoot) const;
+
 		Method myMethod;
 		std::string myPath;
 		std::unordered_map<std::string, std::string> myHeaders;
@@ -56,9 +58,10 @@ namespace fisk::tools::http
 
 	namespace CommonResponseCodes
 	{
-		inline ResponseCode OK{ 200, "OK" };
+		inline ResponseCode SwitchingProtocols{ 101, "Switching Protocols" };
+		inline ResponseCode Ok{ 200, "OK" };
 		inline ResponseCode Forbidden{ 403, "Forbidden" };
-		inline ResponseCode NOT_Found{ 404, "Not Found" };
+		inline ResponseCode NotFound{ 404, "Not Found" };
 	}
 
 	struct ResponseFrame

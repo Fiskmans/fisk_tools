@@ -4,7 +4,7 @@ namespace fisk::tools::http
 {
 	Server::Server()
 	{
-		myDefaultResponse.myCode = CommonResponseCodes::NOT_Found;
+		myDefaultResponse.myCode = CommonResponseCodes::NotFound;
 
 		myDefaultResponse.WriteRawHtml("<h1>The requested endpoint could not be found<h1>");
 		myDefaultResponse.CalculateSize();
@@ -24,12 +24,26 @@ namespace fisk::tools::http
 			if (!frame)
 				break;
 
-			std::optional<ResponseFrame> response = OnFrame.Fire(&(*frame), &aConnection);
+			std::optional<IConnection::RequestResult> result = OnFrame.Fire(&(*frame), &aConnection);
 
-			if (response)
-				response->ToStream(aConnection.GetWriteStream());
+			if (result)
+			{
+				switch (*result)
+				{
+					
+				case IConnection::RequestResult::Use_Default:
+					aConnection.Send(myDefaultResponse);
+					break;
+				case IConnection::RequestResult::Has_Responded:
+					break;
+				case IConnection::RequestResult::Should_Terminate:
+					return;
+				}
+			}
 			else
-				myDefaultResponse.ToStream(aConnection.GetWriteStream());
+			{
+				aConnection.Send(myDefaultResponse);
+			}
 		}
 	}
 
@@ -38,7 +52,7 @@ namespace fisk::tools::http
 		myDefaultResponse = aResponse;
 	}
 
-	Server::EndpointMapping::EndpointMapping(RequestFrame::Method aMethodFilter, FilterMode aPathFilterMode, std::string aPathFilter, Endpoint* aEndpoint, ShortCircutableEvent<ResponseFrame, RequestFrame*, IConnection*>& aEvent)
+	Server::EndpointMapping::EndpointMapping(RequestFrame::Method aMethodFilter, FilterMode aPathFilterMode, std::string aPathFilter, Endpoint* aEndpoint, ShortCircutableEvent<IConnection::RequestResult, RequestFrame*, IConnection*>& aEvent)
 		: myMethod(aMethodFilter)
 		, myPathFilterMode(aPathFilterMode)
 		, myPathFilter(aPathFilter)
@@ -47,7 +61,7 @@ namespace fisk::tools::http
 		myEventHandle = aEvent.Register(std::bind(&EndpointMapping::OnFrame, this, std::placeholders::_1, std::placeholders::_2));
 	}
 
-	std::optional<ResponseFrame> Server::EndpointMapping::OnFrame(RequestFrame* aFrame, IConnection* aConnection)
+	std::optional<IConnection::RequestResult> Server::EndpointMapping::OnFrame(RequestFrame* aFrame, IConnection* aConnection)
 	{
 		if (!(aFrame->myMethod & myMethod))
 			return {};

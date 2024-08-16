@@ -146,6 +146,11 @@ namespace fisk::tools::http
 		return it != myHeaders.end() && it->second == aExpectedValue;
 	}
 
+	bool RequestFrame::GetAsJson(fisk::tools::Json& aOutRoot) const
+	{
+		return aOutRoot.Parse(std::string(myData.begin(), myData.end()).c_str());
+	}
+
 	bool RequestFrame::TryReadLine(ReadStream& aStream, std::string& aOutLine)
 	{
 		constexpr size_t lineBreakLength = sizeof(LineBreak) - 1;
