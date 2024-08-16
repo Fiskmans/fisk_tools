@@ -8,6 +8,8 @@
 #include "tools/Websocket.h"
 
 #include <iostream>
+#include <cstring>
+#include <charconv>
 
 class Client : public fisk::tools::http::IConnection, public fisk::tools::http::IWebsocketCapable
 {
