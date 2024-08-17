@@ -32,7 +32,7 @@ namespace fisk::tools::http
 
 		if (!aFrame.ValidateHeader("Sec-WebSocket-Version", "13"))
 			return aConnection.Send(myErrorFrame);
-		if (!aFrame.ValidateHeader("Connection", "Upgrade"))
+		if (!aFrame.ValidateHeaderContains("Connection", "Upgrade"))
 			return aConnection.Send(myErrorFrame);
 		if (!aFrame.ValidateHeader("Upgrade", "websocket"))
 			return aConnection.Send(myErrorFrame);

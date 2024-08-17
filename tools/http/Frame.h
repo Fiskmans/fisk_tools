@@ -35,6 +35,7 @@ namespace fisk::tools::http
 		bool HasHeader(std::string aField) const;
 		bool GetHeader(std::string aField, std::string& aOutValue) const;
 		bool ValidateHeader(std::string aField, std::string aExpectedValue) const;
+		bool ValidateHeaderContains(std::string aField, std::string aExpectedValue) const;
 
 		bool GetAsJson(fisk::tools::Json& aOutRoot) const;
 

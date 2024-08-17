@@ -4,9 +4,28 @@
 #include <cassert>
 #include <algorithm>
 #include <charconv>
+#include <ranges>
 
 namespace fisk::tools::http
 {
+	struct Trim
+	{
+		std::string operator()(std::string aString)
+		{
+			static const char* whitespace = " \t\n\v";
+
+			std::string::size_type start = aString.find_first_not_of(whitespace);
+			std::string::size_type end = aString.find_last_not_of(whitespace);
+
+			if (start == std::string::npos)
+				return "";
+
+			assert(end != std::string::npos);
+
+			return aString.substr(start, end - start + 1);
+		}
+	};
+
 	std::optional<RequestFrame> RequestFrame::FromStream(ReadStream& aStream)
 	{
 		aStream.RestoreRead();
@@ -144,6 +163,28 @@ namespace fisk::tools::http
 	{
 		auto it = myHeaders.find(aField);
 		return it != myHeaders.end() && it->second == aExpectedValue;
+	}
+
+	bool RequestFrame::ValidateHeaderContains(std::string aField, std::string aExpectedValue) const
+	{
+		std::string full;
+
+		if (!GetHeader(aField, full))
+			return false;
+
+		auto values = std::ranges::views::split(std::string_view(full), std::string_view(","))
+				| std::ranges::views::transform(
+					[](auto aCharRange) 
+					{ 
+						return std::string(std::ranges::begin(aCharRange), std::ranges::end(aCharRange)); 
+					})
+				| std::ranges::views::transform(Trim{});
+
+		return std::ranges::any_of(values, 
+			[&aExpectedValue](std::string aValue) 
+			{ 
+				return aValue == aExpectedValue; 
+			});
 	}
 
 	bool RequestFrame::GetAsJson(fisk::tools::Json& aOutRoot) const
