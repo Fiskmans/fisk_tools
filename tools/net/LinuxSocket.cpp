@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <cstring>
 
 namespace fisk::tools
 {
@@ -27,7 +28,7 @@ namespace fisk::tools
 
 	std::string Socket::GetAddress() const
 	{
-		if (myValue == INVALID_SOCKET)
+		if (myValue == -1)
 			return "<invalid>";
 
 		sockaddr_in6 addr;
