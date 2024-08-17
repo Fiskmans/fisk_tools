@@ -7,6 +7,7 @@
 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <unistd.h>
 #include <cstring>
 
@@ -16,6 +17,14 @@ namespace fisk::tools
 	{
 		if (myValue != -1)
 			::close(myValue);
+	}
+
+	void* GetAddressStart(sockaddr* aSockaddr)
+	{
+		if (aSockaddr->sa_family == AF_INET)
+			return &(reinterpret_cast<sockaddr_in*>(aSockaddr)->sin_addr);
+
+		return &(reinterpret_cast<sockaddr_in6*>(aSockaddr)->sin6_addr);
 	}
 
 	uint16_t GetPort(sockaddr* aSockaddr)
@@ -35,9 +44,9 @@ namespace fisk::tools
 
 		memset(&addr, 0, sizeof(addr));
 
-		int length = sizeof(addr);
+		socklen_t length = sizeof(addr);
 
-		if (::getpeername(myValue, reinterpret_cast<sockaddr*>(&addr), &length) == SOCKET_ERROR)
+		if (::getpeername(myValue, reinterpret_cast<sockaddr*>(&addr), &length) == -1)
 			return "<error>";
 
 		char s[INET6_ADDRSTRLEN];
