@@ -363,6 +363,7 @@ int main(int argc, char** argv)
 
 	StaticHtmlEndpoint helloWorld(
 		"<h1>Hello world!</h1>"
+		R"(<p>This is the example website for <a href=https://github.com/Fiskmans/fisk_tools></p>)"
 		"<p><a href=\"/page_1\">Goto page 1</a></p>"
 		"<p><a href=\"/page_2\">Goto page 2</a></p>"
 		"<p><a href=\"/chat\">Goto Chat page</a></p>"
