@@ -5,6 +5,7 @@
 
 #include "tools/net/Socket.h"
 
+#include <sys/socket.h>
 #include <unistd.h>
 
 namespace fisk::tools
