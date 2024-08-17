@@ -49,8 +49,6 @@ namespace fisk::tools
 		if (::getpeername(myValue, reinterpret_cast<sockaddr*>(&addr), &length) == -1)
 			return "<error>";
 
-		char s[INET6_ADDRSTRLEN];
-
 		sockaddr* base = reinterpret_cast<sockaddr*>(&addr);
 
 		char stringBuffer[INET6_ADDRSTRLEN];
