@@ -17,26 +17,21 @@ FetchContent_Declare(
   BUILD_COMMAND ""
 )
 
-FetchContent_GetProperties(sha1)
-if(NOT sha1_POPULATED)
-  FetchContent_Populate(sha1)
-endif()
+FetchContent_Declare(
+  Catch2
+  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+  GIT_TAG        v3.0.1
+)
 
-add_library(sha1 INTERFACE)
-target_include_directories(sha1 INTERFACE ${sha1_SOURCE_DIR})
+FetchContent_MakeAvailable(sha1)
 
+add_subdirectory(sha1)
 add_subdirectory(tools)
 add_subdirectory(examples)
 
 Include(CTest)
 
 if(FISK_BUILD_TESTING)
-	FetchContent_Declare(
-	  Catch2
-	  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-	  GIT_TAG        v3.0.1 # or a later release
-	)
-
 	FetchContent_MakeAvailable(Catch2)
 
 	add_subdirectory(tools_test)

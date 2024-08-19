@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <iostream>
 
 namespace fisk::tools
 {
@@ -58,6 +59,7 @@ namespace fisk::tools
 	{
 	public:
 		void AppendData(std::shared_ptr<StreamSegment> aData);
+		bool AppendAllFromStream(std::istream& aStream);
 
 		bool Read(uint8_t* aData, size_t aSize);
 		size_t Peek(uint8_t* aData, size_t aSize);
@@ -80,6 +82,7 @@ namespace fisk::tools
 	{
 	public:
 		void WriteData(const uint8_t* aData, size_t aSize);
+		bool WriteAllToStream(std::ostream& aStream);
 
 		std::shared_ptr<StreamSegment> Get();
 		bool HasData();

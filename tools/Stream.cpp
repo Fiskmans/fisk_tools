@@ -56,6 +56,26 @@ namespace fisk::tools
 			myTail = myTail->myNext;
 	}
 
+	bool ReadStream::AppendAllFromStream(std::istream& aStream)
+	{
+		while (true)
+		{
+			if (!aStream)
+				return false;
+
+			std::shared_ptr<StreamSegment> segment = std::make_shared<StreamSegment>();
+
+			int amount = aStream.readsome(reinterpret_cast<char*>(segment->myData), segment->CHUNK_SIZE);
+
+			if (amount == 0)
+				return true;
+
+			segment->mySize = amount;
+
+			AppendData(segment);
+		}
+	}
+
 	bool ReadStream::Read(uint8_t* aData, size_t aSize)
 	{
 		StreamOffset off;
@@ -153,6 +173,20 @@ namespace fisk::tools
 				myWriteHead			= myWriteHead->myNext;
 			}
 		}
+	}
+
+	bool WriteStream::WriteAllToStream(std::ostream& aStream)
+	{
+		std::shared_ptr<StreamSegment> at = Get();
+
+		// Important to not early exit and chase the segments to the end so you don't get a stack overflow on destruction
+		while (at)
+		{
+			aStream.write(reinterpret_cast<char*>(at->myData), at->mySize);
+			at = at->myNext;
+		}
+
+		return !!aStream;
 	}
 
 	std::shared_ptr<StreamSegment> WriteStream::Get()
