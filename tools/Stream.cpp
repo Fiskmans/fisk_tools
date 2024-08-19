@@ -65,7 +65,8 @@ namespace fisk::tools
 
 			std::shared_ptr<StreamSegment> segment = std::make_shared<StreamSegment>();
 
-			int amount = aStream.readsome(reinterpret_cast<char*>(segment->myData), segment->CHUNK_SIZE);
+			aStream.read(reinterpret_cast<char*>(segment->myData), segment->CHUNK_SIZE);
+			int amount = aStream.gcount();
 
 			if (amount == 0)
 				return true;
@@ -73,6 +74,9 @@ namespace fisk::tools
 			segment->mySize = amount;
 
 			AppendData(segment);
+
+			if (aStream.eof())
+				return true;
 		}
 	}
 
