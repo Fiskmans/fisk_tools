@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <shared_mutex>
+#include <sstream>
 
 namespace fisk::tools
 {
