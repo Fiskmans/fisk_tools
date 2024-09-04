@@ -4,6 +4,7 @@
 #include "tools/Json.h"
 
 #include <string>
+#include <string_view>
 #include <optional>
 #include <stdint.h>
 #include <unordered_map>
