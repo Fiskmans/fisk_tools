@@ -50,14 +50,14 @@ namespace fisk::tools
 
 		if (aReuseAddress)
 		{
-			int reusePort = TRUE;
+			int reusePort = 1;
 
 			int reusePortResult = ::setsockopt(mySocket.myValue, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&reusePort), sizeof(reusePort));
 
 			if (reusePortResult != 0)
 			{
 				LOG_SYS_WARNING("Failed to make set reuse address",
-					"Port: " + std::to_string(aPort), "Error: " + std::to_string(::WSAGetLastError()));
+					"Port: " + std::to_string(aPort), "Error: " + std::to_string(errno));
 			}
 		}
 

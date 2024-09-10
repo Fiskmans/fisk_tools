@@ -54,8 +54,8 @@ namespace fisk::tools
             uint8_t block[3]
             {
                 aBlock[0],
-                aAmount > 1 ? aBlock[1] : 0,
-                aAmount > 2 ? aBlock[2] : 0
+                aAmount > 1 ? aBlock[1] : uint8_t{ 0 },
+                aAmount > 2 ? aBlock[2] : uint8_t{ 0 }
             };
 
             std::string out = EncodeBlock(block);
