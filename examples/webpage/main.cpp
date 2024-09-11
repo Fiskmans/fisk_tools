@@ -81,7 +81,7 @@ public:
 		FISK_TRACE("http_response");
 
 		if (Client* client = dynamic_cast<Client*>(&aConnection))
-			std::cout << "served static html to " << client->Address() << "\n";
+			std::cout << "served static html " << aFrame.myPath << " to " << client->Address() << "\n";
 		else
 			std::cout << "Unkown client type\n";
 
@@ -108,7 +108,7 @@ public:
 		FISK_TRACE("json_response");
 
 		if (Client* client = dynamic_cast<Client*>(&aConnection))
-			std::cout << "served static json to " << client->Address() << "\n";
+			std::cout << "served static json " << aFrame.myPath << " to " << client->Address() << "\n";
 		else
 			std::cout << "Unkown client type\n";
 
@@ -127,7 +127,7 @@ public:
 		FISK_TRACE("trace_response");
 
 		if (Client* client = dynamic_cast<Client*>(&aConnection))
-			std::cout << "served trace dump to " << client->Address() << "\n";
+			std::cout << "served trace dump " << aFrame.myPath << " to " << client->Address() << "\n";
 		else
 			std::cout << "Unkown client type\n";
 
@@ -343,6 +343,7 @@ private:
 int main(int argc, char** argv)
 {
 	uint16_t port = 80;
+	bool reuse = false;
 
 	if (argc > 1)
 	{
@@ -356,6 +357,8 @@ int main(int argc, char** argv)
 			std::cout << "Failed to parse port number from first argument: " << argv[1] << "\n";
 			return EXIT_FAILURE;
 		}
+
+		reuse = true;
 	}
 
 
@@ -515,7 +518,7 @@ int main(int argc, char** argv)
 	server.AddEndpoint(fisk::tools::http::RequestFrame::GET, fisk::tools::http::Server::FilterMode::Full, "/trace", &tracePage);
 
 	std::vector<Client*> clients;
-	fisk::tools::TCPListenSocket listenSocket(port);
+	fisk::tools::TCPListenSocket listenSocket(port, reuse);
 
 	fisk::tools::EventReg newConnectionHandle = listenSocket.OnNewConnection.Register([&clients, &server](std::shared_ptr<fisk::tools::TCPSocket> aSocket)
 	{
@@ -544,6 +547,8 @@ int main(int argc, char** argv)
 				}
 			}
 		}
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 }
 

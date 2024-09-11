@@ -16,7 +16,7 @@
 
 namespace fisk::tools
 {
-	TCPListenSocket::TCPListenSocket(Port aPort)
+	TCPListenSocket::TCPListenSocket(Port aPort, bool aReuseAddress)
 	{
 		mySocket.myValue = ::socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
 
@@ -47,6 +47,19 @@ namespace fisk::tools
 			LOG_SYS_WARNING("Failed to make listensocket nonBlocking",
 							"Port: " + std::to_string(aPort), "Error: " + std::to_string(::WSAGetLastError()));
 			return;
+		}
+
+		if (aReuseAddress)
+		{
+			WORD reusePort = TRUE;
+
+			int reusePortResult = ::setsockopt(mySocket.myValue, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&reusePort), sizeof(reusePort));
+
+			if (reusePortResult != 0)
+			{
+				LOG_SYS_WARNING("Failed to make set reuse address",
+					"Port: " + std::to_string(aPort), "Error: " + std::to_string(::WSAGetLastError()));
+			}
 		}
 
 

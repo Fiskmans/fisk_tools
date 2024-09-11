@@ -15,7 +15,7 @@ namespace fisk::tools
 	public:
 		static constexpr Port AnyPort = 0;
 
-		TCPListenSocket(Port aPort);
+		TCPListenSocket(Port aPort, bool aReuseAddress = false);
 		~TCPListenSocket() = default;
 
 		bool Update();
