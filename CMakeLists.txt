@@ -23,6 +23,12 @@ FetchContent_Declare(
   GIT_TAG        v3.0.1
 )
 
+FetchContent_Declare(
+  GoogleBench
+  GIT_REPOSITORY https://github.com/google/benchmark.git
+  GIT_TAG        v1.9.0
+)
+
 FetchContent_MakeAvailable(sha1)
 
 add_subdirectory(sha1)
@@ -32,7 +38,12 @@ add_subdirectory(examples)
 Include(CTest)
 
 if(FISK_BUILD_TESTING)
+
+	set(BENCHMARK_ENABLE_GTEST_TESTS false)
+	
 	FetchContent_MakeAvailable(Catch2)
+	FetchContent_MakeAvailable(GoogleBench)
 
 	add_subdirectory(tools_test)
+	add_subdirectory(tools_benchmark)
 endif()

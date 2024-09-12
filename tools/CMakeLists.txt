@@ -13,6 +13,7 @@ list(APPEND files "Utility.h")
 list(APPEND files "MathVector.h")
 list(APPEND files "Matrix.h")
 list(APPEND files "Shapes.h")
+list(APPEND files "ArenaAllocator.h")
 
 list(APPEND files "Json.h" 						"Json.cpp")
 list(APPEND files "File.h" 						"File.cpp")
