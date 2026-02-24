@@ -45,5 +45,4 @@ if(FISK_BUILD_TESTING)
 	FetchContent_MakeAvailable(GoogleBench)
 
 	add_subdirectory(tools_test)
-	add_subdirectory(tools_benchmark)
 endif()
