@@ -242,7 +242,7 @@ namespace fisk::tools
 		assert(aEventId != NullEventId);
 
 		typename decltype(myCallbacks)::iterator it = 
-			std::find_if(myCallbacks.begin(), 
+			std::ranges::find_if(myCallbacks.begin(), 
 				myCallbacks.end(), 
 				[aEventId](const Registration& aReg) {
 					return aReg.myEventID == aEventId; });

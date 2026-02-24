@@ -247,7 +247,7 @@ namespace fisk::tools
 			aOutStream << '"' << std::get<StringType>(myValue) << '"';
 			break;
 		case 3:
-			aOutStream << std::get<BooleanType>(myValue) ? "true" : "false";
+			aOutStream << (std::get<BooleanType>(myValue) ? "true" : "false");
 			break;
 		case 4:
 		{
@@ -604,7 +604,7 @@ namespace fisk::tools
 				return false;
 
 			aPtr++;
-			myValue = nullptr_t();
+			myValue = std::nullptr_t();
 			return true;
 
 		case 'f':

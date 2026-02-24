@@ -78,7 +78,7 @@ namespace fisk::tools
 	class Json
 	{
 	public:
-		using NullType	  = nullptr_t;
+		using NullType	  = std::nullptr_t;
 		using NumberType  = double;
 		using StringType  = std::string;
 		using BooleanType = bool;
