@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.22)
 project(FISK_TOOLS)
 
 option(FISK_BUILD_TESTING "Build test executables" ON)
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 set(CMAKE_CXX_STANDARD 20)
-set(BUILD_SHARED_LIBS OFF)
 
 Include(FetchContent)
 
